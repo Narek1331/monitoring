@@ -21,7 +21,7 @@ class TelegramServiceProvider extends ServiceProvider
     {
 
         $botToken = env('TELEGRAM_BOT_TOKEN');
-        $webhookUrl = 'https://9aa9-185-79-2-103.ngrok-free.app/webhook/telegram';
+        $webhookUrl = 'https://iqm-tools.ru/webhook/telegram';
 
         if ($botToken && $webhookUrl) {
             Http::post("https://api.telegram.org/bot{$botToken}/setWebhook", [
