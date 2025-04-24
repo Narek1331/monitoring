@@ -10,18 +10,21 @@ class CheckService
     protected $httpService;
     protected $whoisService;
     protected $siteScannerService;
+    protected $virusTotalService;
 
     public function __construct(
         TaskService $taskService,
         HttpService $httpService,
         WhoisService $whoisService,
-        SiteScannerService $siteScannerService
+        SiteScannerService $siteScannerService,
+        VirusTotalService $virusTotalService
         )
     {
         $this->taskService = $taskService;
         $this->httpService = $httpService;
         $this->whoisService = $whoisService;
         $this->siteScannerService = $siteScannerService;
+        $this->virusTotalService = $virusTotalService;
     }
     public function index()
     {
@@ -40,6 +43,9 @@ class CheckService
             if($task->verificationMethod->slug == 'proverka_dostupnosti_saita_s_poiskom_slova_na_stranice_metod_get')
             {
                 $this->proverkaDostupnostiSaitaSPoiskomSlovaNaStraniceMetodGet($task);
+            }else if($task->verificationMethod->slug == 'proverka_saita_na_virusy_i_nalicie_v_raznyx_bazax')
+            {
+                $this->proverkaSaitaNaVirusyINalicieVRaznyxBazax($task);
             }
         }
     }
@@ -172,6 +178,104 @@ class CheckService
     {
         $scanWithSucuri = $this->siteScannerService->scanWithSucuri($url);
         $virustotal = $this->siteScannerService->scanWithVirusTotal($url);
+    }
+
+    private function proverkaSaitaNaVirusyINalicieVRaznyxBazax($task)
+    {
+        if($task && $task->status)
+        {
+
+            if(!$task->last_check_date)
+            {
+                $task->last_check_date = now();
+                $task->save();
+            }
+
+            $givenTime = Carbon::parse($task['last_check_date']);
+            $currentTime = Carbon::now();
+
+            if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
+                $task->last_check_date = now();
+                $task->save();
+            }else{
+                return;
+            }
+
+            $url = $task['protocol'] . $task['address_ip'];
+            $errorMessage = $task->error_message;
+
+            if($port = $task['port'])
+            {
+                $url .= ":$port";
+            }
+
+            $httpData = $this->httpService->makeSimpleRequest($url,$task);
+
+            $httpStatusCode = $httpData['status'] ?? 500;
+
+            if($httpData && isset($httpData['html']))
+            {
+
+                $dangerousSitesDetection = $task->dangerous_sites_detection;
+
+                if($dangerousSitesDetection)
+                {
+                    $linkArray = $this->extractLinksAndSrcs($httpData['html']);
+
+                    foreach($linkArray as $link)
+                    {
+                        if(!$this->virusTotalService->checkUrl($link))
+                        {
+                            $task->messages()->create([
+                                'status' => false,
+                                'text' => $errorMessage ?? 'Обнаружен вирусный URL ' . $link,
+                                'status_code' => $httpStatusCode
+                            ]);
+                        }
+                    }
+                }
+
+            }
+
+        }
+    }
+
+    public function extractLinksAndSrcs($html): array
+    {
+
+        libxml_use_internal_errors(true);
+        $dom = new \DOMDocument();
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+
+        $links = [];
+
+        foreach ($dom->getElementsByTagName('a') as $element) {
+            $href = $element->getAttribute('href');
+            if (!empty($href)) {
+                $links[] = $href;
+            }
+        }
+
+        foreach ($dom->getElementsByTagName('link') as $element) {
+            $href = $element->getAttribute('href');
+            if (!empty($href)) {
+                $links[] = $href;
+            }
+        }
+
+        $tagsWithSrc = ['img', 'script', 'iframe', 'source', 'video', 'audio'];
+
+        foreach ($tagsWithSrc as $tag) {
+            foreach ($dom->getElementsByTagName($tag) as $element) {
+                $src = $element->getAttribute('src');
+                if (!empty($src)) {
+                    $links[] = $src;
+                }
+            }
+        }
+
+        return $links;
     }
 
 

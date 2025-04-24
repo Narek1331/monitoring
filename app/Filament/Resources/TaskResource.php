@@ -689,24 +689,24 @@ class TaskResource extends Resource
                 ->columnSpan(1)
                 ->helperText(''),
 
-            Toggle::make('send_critical_error_alerts')
-                ->label('Присылать уведомления только о критичных ошибках')
-                ->default(false)
-                ->columnSpan(1)
-                ->helperText(''),
+            // Toggle::make('send_critical_error_alerts')
+            //     ->label('Присылать уведомления только о критичных ошибках')
+            //     ->default(false)
+            //     ->columnSpan(1)
+            //     ->helperText(''),
 
-            Toggle::make('ignore_error_recovery')
-                ->label('Игнорировать восстановление после ошибки')
-                ->default(false)
-                ->columnSpan(1)
-                ->helperText(''),
+            // Toggle::make('ignore_error_recovery')
+            //     ->label('Игнорировать восстановление после ошибки')
+            //     ->default(false)
+            //     ->columnSpan(1)
+            //     ->helperText(''),
 
 
-            Toggle::make('notify_on_rkn_domain_detection')
-                ->label('Присылать уведомления только о том, когда в базе РКН будет обнаружен именно домен')
-                ->default(false)
-                ->columnSpan(1)
-                ->helperText(''),
+            // Toggle::make('notify_on_rkn_domain_detection')
+            //     ->label('Присылать уведомления только о том, когда в базе РКН будет обнаружен именно домен')
+            //     ->default(false)
+            //     ->columnSpan(1)
+            //     ->helperText(''),
 
             Select::make('timezone')
                 ->label('Мое время')
