@@ -24,7 +24,8 @@ use Filament\Forms\Components\{
     Select,
     Toggle,
     Textarea,
-    CheckboxList
+    CheckboxList,
+    Placeholder
 };
 use Filament\Tables\Columns\{
     TextColumn,
@@ -33,7 +34,8 @@ use Filament\Tables\Columns\{
 use App\Models\VerificationMethod;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Tables\Actions\ReplicateAction;
-
+use Filament\Infolists\Components\View;
+use App\Filament\Forms\Components\InfoBox;
 class TaskResource extends Resource
 {
     use \App\Traits\User\GetHelper;
@@ -63,6 +65,11 @@ class TaskResource extends Resource
                     Wizard\Step::make(' Метод проверки задания')
                         ->icon('heroicon-m-document-check')
                         ->schema([
+                            // view('components.info-box'),
+                            InfoBox::make('name')
+                            ->hidden(function($record,$get){
+                                return !$record || $get('verification_method_id') != 3;
+                            }),
                             Radio::make('verification_method_id')
                             ->label('')
                             ->required()

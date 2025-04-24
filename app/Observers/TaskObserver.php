@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Task;
+use Illuminate\Support\Str;
 
 class TaskObserver
 {
@@ -12,6 +13,8 @@ class TaskObserver
     public function created(Task $task): void
     {
         $task->last_check_date = now();
+        $task->token = Str::random(40);
+        $task->save();
     }
 
     /**

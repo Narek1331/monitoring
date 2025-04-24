@@ -48,6 +48,7 @@ class Task extends Model
         'page_size_range',
         'set_as_template',
         'last_check_date',
+        'token',
     ];
 
     protected $casts = [

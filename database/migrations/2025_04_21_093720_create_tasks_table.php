@@ -54,6 +54,7 @@ return new class extends Migration
             $table->string('page_size_range')->nullable();
             $table->boolean('set_as_template')->nullable()->default(false);
             $table->dateTime('last_check_date')->nullable();
+            $table->string('token')->nullable();
 
             $table->timestamps();
 
