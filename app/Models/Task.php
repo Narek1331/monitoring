@@ -47,6 +47,7 @@ class Task extends Model
         'response_number_range',
         'page_size_range',
         'set_as_template',
+        'last_check_date',
     ];
 
     protected $casts = [
@@ -60,11 +61,17 @@ class Task extends Model
         'notify_on_rkn_domain_detection' => 'boolean',
         'follow_redirects' => 'boolean',
         'set_as_template' => 'boolean',
+        // 'last_check_date' => 'datetime',
     ];
 
     public function reportFrequencies()
     {
         return $this->belongsToMany(ReportFrequency::class);
+    }
+
+    public function verificationMethod()
+    {
+        return $this->hasOne(VerificationMethod::class,'id','verification_method_id');
     }
 
     public function reportContacts()
@@ -76,4 +83,10 @@ class Task extends Model
     {
         return $this->belongsToMany(Contact::class, 'task_error_notification_contact');
     }
+
+    public function messages()
+    {
+        return $this->hasMany(TaskMessage::class);
+    }
+
 }

@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Services;
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ConnectException;
+class HttpService
+{
+    protected Client $client;
+
+    public function __construct()
+    {
+        $this->client = new Client();
+    }
+
+    public function makeRequest(string $url, array $data = [], string $method = 'GET', float $timeout = 10.0)
+    {
+        try {
+            $response = $this->client->request($method, $url, [
+                'json' => $data,
+                'timeout' => $timeout,
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
+            ]);
+
+            return json_decode($response->getBody()->getContents(), true);
+        } catch (RequestException $e) {
+            return [
+                'error' => true,
+                'message' => $e->getMessage(),
+                'response' => $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null,
+            ];
+        }
+    }
+
+    public function makeSimpleRequest(string $url, $task)
+    {
+        $timeout = $task->site_timeout_duration ?? 10.0;
+
+        try {
+            $response = $this->client->request('GET', $url, [
+                'timeout' => $timeout,
+                // 'allow_redirects' => true,
+                'Referer' => $task->referer ?? '',
+                'auth' => [$task->login ?? '', $task->password ?? ''],
+                'headers' => [
+                   ...$this->headersTextToArray($task->header_for_request)
+                ],
+            ]);
+
+            return [
+                'html' => $response->getBody()->getContents(),
+                'status' => $response->getStatusCode()
+            ];
+        } catch (ConnectException $e) {
+            // Логировать можно здесь, если нужно
+            return null;
+        } catch (RequestException $e) {
+            return null;
+        }
+    }
+
+    function headersTextToArray($input) {
+
+        $pairs = explode(',', $input);
+
+        $result = [];
+
+        foreach ($pairs as $pair) {
+            $pair = trim($pair);
+
+            if (strpos($pair, ': ') !== false) {
+                list($key, $value) = explode(': ', $pair, 2);
+                $result[$key] = $value;
+            } else {
+                return [];
+            }
+        }
+
+        return $result;
+    }
+}

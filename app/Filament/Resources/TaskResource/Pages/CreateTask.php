@@ -9,11 +9,12 @@ use App\Traits\User\StoreHelper;
 class CreateTask extends CreateRecord
 {
     use StoreHelper;
-    
+
     protected static string $resource = TaskResource::class;
 
     public function getTitle(): string
     {
         return 'Создать';
     }
+
 }
