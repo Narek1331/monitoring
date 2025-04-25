@@ -16,6 +16,10 @@ Route::get('/notification', function (\App\Services\NotificationService $notific
     $notificationService->send();
 });
 
+Route::get('/backup', function (\App\Services\BackupService $backupService) {
+    $backupService->dailyBackupTaskMessages();
+});
+
 Route::group(['prefix'=>'webhook'], function () {
     Route::post('/telegram', [TelegramController::class, 'index'])->name('webhook.telegram');
     Route::post('/task/{token}', [TaskController::class, 'index'])->name('webhook.task');
