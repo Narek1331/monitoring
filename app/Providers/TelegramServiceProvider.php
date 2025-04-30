@@ -24,9 +24,9 @@ class TelegramServiceProvider extends ServiceProvider
         $webhookUrl = 'https://iqm-tools.ru/webhook/telegram';
 
         if ($botToken && $webhookUrl) {
-            Http::post("https://api.telegram.org/bot{$botToken}/setWebhook", [
-                'url' => $webhookUrl,
-            ]);
+            // Http::post("https://api.telegram.org/bot{$botToken}/setWebhook", [
+            //     'url' => $webhookUrl,
+            // ]);
         }
     }
 }
