@@ -1,0 +1,85 @@
+<?php
+
+return [
+    "Client" => "Клиент",
+    "Admin" => "Администратор",
+    "Super Admin" => "Супер Администратор",
+    "Clients" => "Клиенты",
+    "Edit" => "Редактировать",
+    "Role" => "Роль",
+    "Employee Name" => "Имя сотрудника",
+    "Email" => "Электронная почта",
+    "Permissions" => "Разрешения",
+
+    "create BlackPhone" => "создать Запрещённый Телефон",
+    "create Data" => "создать Данные",
+    "create Project" => "создать Проект",
+    "create ProjectDomain" => "создать Домен Проекта",
+    "create User" => "создать Сотрудника",
+
+    "delete BlackPhone" => "удалить Запрещённый Телефон",
+    "delete Data" => "удалить Данные",
+    "delete Project" => "удалить Проект",
+    "delete ProjectDomain" => "удалить Домен Проекта",
+    "delete User" => "удалить Сотрудника",
+
+    "delete-any BlackPhone" => "удалить любой Запрещённый Телефон",
+    "delete-any Data" => "удалить любые Данные",
+    "delete-any Project" => "удалить любой Проект",
+    "delete-any ProjectDomain" => "удалить любой Домен Проекта",
+    "delete-any User" => "удалить любого Сотрудника",
+
+    "force-delete BlackPhone" => "принудительно удалить Запрещённый Телефон",
+    "force-delete Data" => "принудительно удалить Данные",
+    "force-delete Project" => "принудительно удалить Проект",
+    "force-delete ProjectDomain" => "принудительно удалить Домен Проекта",
+    "force-delete User" => "принудительно удалить Сотрудника",
+
+    "force-delete-any BlackPhone" => "принудительно удалить любой Запрещённый Телефон",
+    "force-delete-any Data" => "принудительно удалить любые Данные",
+    "force-delete-any Project" => "принудительно удалить любой Проект",
+    "force-delete-any ProjectDomain" => "принудительно удалить любой Домен Проекта",
+    "force-delete-any User" => "принудительно удалить любого Сотрудника",
+
+    "reorder BlackPhone" => "изменить порядок Запрещённых Телефонов",
+    "reorder Data" => "изменить порядок Данных",
+    "reorder Project" => "изменить порядок Проектов",
+    "reorder ProjectDomain" => "изменить порядок Домена Проектов",
+    "reorder User" => "изменить порядок Сотрудников",
+
+    "replicate BlackPhone" => "дублировать Запрещённый Телефон",
+    "replicate Data" => "дублировать Данные",
+    "replicate Project" => "дублировать Проект",
+    "replicate ProjectDomain" => "дублировать Домен Проекта",
+    "replicate User" => "дублировать Сотрудника",
+
+    "restore BlackPhone" => "восстановить Запрещённый Телефон",
+    "restore Data" => "восстановить Данные",
+    "restore Project" => "восстановить Проект",
+    "restore ProjectDomain" => "восстановить Домен Проекта",
+    "restore User" => "восстановить Сотрудника",
+
+    "restore-any BlackPhone" => "восстановить любой Запрещённый Телефон",
+    "restore-any Data" => "восстановить любые Данные",
+    "restore-any Project" => "восстановить любой Проект",
+    "restore-any ProjectDomain" => "восстановить любой Домен Проекта",
+    "restore-any User" => "восстановить любого Сотрудника",
+
+    "update BlackPhone" => "обновить Запрещённый Телефон",
+    "update Data" => "обновить Данные",
+    "update Project" => "обновить Проект",
+    "update ProjectDomain" => "обновить Домен Проекта",
+    "update User" => "обновить Сотрудника",
+
+    "view BlackPhone" => "просмотреть Запрещённый Телефон",
+    "view Data" => "просмотреть Данные",
+    "view Project" => "просмотреть Проект",
+    "view ProjectDomain" => "просмотреть Домен Проекта",
+    "view User" => "просмотреть Сотрудника",
+
+    "view-any BlackPhone" => "просмотреть любой Запрещённый Телефон",
+    "view-any Data" => "просмотреть любые Данные",
+    "view-any Project" => "просмотреть любой Проект",
+    "view-any ProjectDomain" => "просмотреть любой Домен Проекта",
+    "view-any User" => "просмотреть любого Сотрудника",
+];

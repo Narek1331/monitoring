@@ -6,7 +6,8 @@ use App\Filament\Resources\TaskResource\Pages;
 use App\Filament\Resources\TaskResource\RelationManagers;
 use App\Models\{
     Task,
-    InspectionCost
+    InspectionCost,
+    Contact
 };
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -126,31 +127,31 @@ class TaskResource extends Resource
                                 ->default(5)
                                 ->helperText('Нужно выбрать, как часто мы должны проверять ваш сайт или сервер. Оптимальным интервалом считается проверка раз в 5 минут.'),
 
-                            // Select::make('error_check_interval')
-                            //     ->label('Периодичность проверки в момент, когда случается ошибка в работе вашего сайта (сервера)')
-                            //     ->required()
-                            //     ->columnSpan(1)
-                            //     ->options([
-                            //         1 => 'Раз в 1 минуту',
-                            //         2 => 'Раз в 2 минуты',
-                            //         3 => 'Раз в 3 минуты',
-                            //         5 => 'Раз в 5 минут',
-                            //         10 => 'Раз в 10 минут',
-                            //         15 => 'Раз в 15 минут',
-                            //         20 => 'Раз в 20 минут',
-                            //         30 => 'Раз в 30 минут',
-                            //         60 => 'Раз в 1 час',
-                            //         180 => 'Раз в 3 часа',
-                            //         360 => 'Раз в 6 часов',
-                            //         720 => 'Раз в 12 часов',
-                            //         1440 => 'Раз в сутки',
-                            //         4320 => 'Раз в 3 дня',
-                            //         10080 => 'Раз в неделю',
-                            //         43200 => 'Раз в 30 дней'
-                            //     ])
-                            //     ->disablePlaceholderSelection(true)
-                            //     ->default(2)
-                            //     ->helperText('Здесь необходимо выбрать, как часто мы будем проверять ваш сайт или сервер во время возникновения ошибки в его работе. Нужно сделать чаще, чем обычный интервал - тогда как только работа восстановится, мы вас сразу уведомим. Выберите в два-три раза меньше, чем обычная периодичность, или еще чаще.')
+                            Select::make('error_check_interval')
+                                ->label('Периодичность проверки в момент, когда случается ошибка в работе вашего сайта (сервера)')
+                                ->required()
+                                ->columnSpan(1)
+                                ->options([
+                                    1 => 'Раз в 1 минуту',
+                                    2 => 'Раз в 2 минуты',
+                                    3 => 'Раз в 3 минуты',
+                                    5 => 'Раз в 5 минут',
+                                    10 => 'Раз в 10 минут',
+                                    15 => 'Раз в 15 минут',
+                                    20 => 'Раз в 20 минут',
+                                    30 => 'Раз в 30 минут',
+                                    60 => 'Раз в 1 час',
+                                    180 => 'Раз в 3 часа',
+                                    360 => 'Раз в 6 часов',
+                                    720 => 'Раз в 12 часов',
+                                    1440 => 'Раз в сутки',
+                                    4320 => 'Раз в 3 дня',
+                                    10080 => 'Раз в неделю',
+                                    43200 => 'Раз в 30 дней'
+                                ])
+                                ->disablePlaceholderSelection(true)
+                                ->default(2)
+                                ->helperText('Здесь необходимо выбрать, как часто мы будем проверять ваш сайт или сервер во время возникновения ошибки в его работе. Нужно сделать чаще, чем обычный интервал - тогда как только работа восстановится, мы вас сразу уведомим. Выберите в два-три раза меньше, чем обычная периодичность, или еще чаще.')
                         ]),
                         Wizard\Step::make('Настройки уведомлений')
                         ->icon('heroicon-m-speaker-wave')
@@ -204,6 +205,14 @@ class TaskResource extends Resource
                                 ->relationship('errorNotificationContacts','id')
                                 ->label('Выберите контакты для отправки отчетов:')
                                 ->preload()
+                                ->options(function(){
+                                    return auth()->user()
+                                    ->contacts
+                                    ->mapWithKeys(fn ($contact) => [
+                                        $contact->id => $contact->name ?: $contact->email,
+                                    ])
+                                    ->toArray();
+                                })
                                 ->columnSpan(1)
                                 ->helperText('Выберите контакты, на которые мы будем отправлять отчеты. Не более 10 контактов.')
 
@@ -410,6 +419,17 @@ class TaskResource extends Resource
             ->label('Контакты для отправки уведомлений об ошибках')
             ->columnSpan(1)
             ->preload()
+            ->options(function(){
+
+                $datas = auth()->user()
+                ->contacts
+                ->mapWithKeys(fn ($contact) => [
+                    $contact->id => $contact->name ?: $contact->email,
+                ])
+                ->toArray();
+
+                return $datas;
+            })
             ->helperText('Выберите контакты, на которые мы будем отправлять уведомления об ошибках в работе задания и о восстановлении после ошибки. Не более 30 контактов.');
 
 
@@ -481,6 +501,17 @@ class TaskResource extends Resource
             ->multiple()
             ->relationship('reportContacts','id')
             ->label('Контакты для отправки уведомлений об ошибках')
+            ->options(function(){
+
+                $datas = auth()->user()
+                ->contacts
+                ->mapWithKeys(fn ($contact) => [
+                    $contact->id => $contact->name ?: $contact->email,
+                ])
+                ->toArray();
+
+                return $datas;
+            })
             ->columnSpan(1)
             ->preload()
             ->helperText('Выберите контакты, на которые мы будем отправлять уведомления об ошибках в работе задания и о восстановлении после ошибки. Не более 30 контактов.');
@@ -525,6 +556,17 @@ class TaskResource extends Resource
             ->multiple()
             ->relationship('reportContacts','id')
             ->label('Контакты для отправки уведомлений об ошибках')
+            ->options(function(){
+
+                $datas = auth()->user()
+                ->contacts
+                ->mapWithKeys(fn ($contact) => [
+                    $contact->id => $contact->name ?: $contact->email,
+                ])
+                ->toArray();
+
+                return $datas;
+            })
             ->columnSpan(1)
             ->preload()
             ->helperText('Выберите контакты, на которые мы будем отправлять уведомления об ошибках в работе задания и о восстановлении после ошибки. Не более 30 контактов.');
