@@ -71,6 +71,7 @@ class CheckService
         $url = $task['protocol'] . $task['address_ip'];
         $errorMessage = $task->error_message;
         $notifyOnRecovery = $task->notify_on_recovery;
+        $taskName = $task->name;
 
         if($port = $task['port'])
         {
@@ -85,7 +86,7 @@ class CheckService
         {
             $task->messages()->create([
                 'status' => false,
-                'text' => $errorMessage ?? 'Ошибка сервера',
+                'text' => $errorMessage ?? "$taskName : Ошибка сервера",
                 'status_code' => 500
             ]);
             return;
@@ -97,7 +98,7 @@ class CheckService
             {
                 $task->messages()->create([
                     'status' => true,
-                    'text' => 'Сервер полностью восстановлен',
+                    'text' => "$taskName : Сервер полностью восстановлен",
                     'status_code' => $httpStatusCode
                 ]);
             }
@@ -113,7 +114,7 @@ class CheckService
         if ($searchTextInResponse && strpos($httpData['html'], $searchTextInResponse) == false) {
             $task->messages()->create([
                 'status' => false,
-                'text' => $errorMessage ?? 'Запрашиваемый текст отсутствует',
+                'text' => $errorMessage ?? "$taskName : Запрашиваемый текст отсутствует",
                 'status_code' => $httpStatusCode
             ]);
             return;
@@ -123,7 +124,7 @@ class CheckService
         if ($textPresenceErrorCheck && strpos($httpData['html'], $textPresenceErrorCheck) !== false) {
             $task->messages()->create([
                 'status' => false,
-                'text' => $errorMessage ?? 'Ошибка: текст обнаружен',
+                'text' => $errorMessage ?? "$taskName :Ошибка: текст обнаружен",
                 'status_code' => $httpStatusCode
             ]);
             return;
@@ -133,7 +134,7 @@ class CheckService
         {
             $task->messages()->create([
                 'status' => false,
-                'text' => $errorMessage ?? 'Обнаружен ошибочный статус-код в ответе сервера',
+                'text' => $errorMessage ?? "$taskName : Обнаружен ошибочный статус-код в ответе сервера",
                 'status_code' => $httpStatusCode
             ]);
             return;
