@@ -32,3 +32,14 @@ Route::get('/download/code', function(){
     }
     return abort(404, 'File not found');
 })->name('download.code');
+
+Route::get('/telegram', function () {
+    $botToken = env('TELEGRAM_BOT_TOKEN');
+        $webhookUrl = 'https://iqm-tools.ru/webhook/telegram';
+
+        if ($botToken && $webhookUrl) {
+            Illuminate\Support\Facades\Http::post("https://api.telegram.org/bot{$botToken}/setWebhook", [
+                'url' => $webhookUrl,
+            ]);
+        }
+});
