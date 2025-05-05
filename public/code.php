@@ -1,6 +1,6 @@
 <?php
 
-$directory_to_watch = '/home/narek/Downloads/test';
+$directory_to_watch = __DIR__;
 const TOKEN = 'cWun1cMtYPIJlUHtd2b7pf899bwLBVgug2RmML2P';
 function getFileChecksum($filePath) {
     return md5_file($filePath);
