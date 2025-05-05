@@ -240,7 +240,7 @@ class TaskResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('address_ip')
+                TextColumn::make('name')
                     ->label('Задание')
                     ->searchable()
                     ->sortable(),
