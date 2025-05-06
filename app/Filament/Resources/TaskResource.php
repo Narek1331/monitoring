@@ -252,9 +252,7 @@ class TaskResource extends Resource
                     ->sortable()
                     ->dateTime(),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 ReplicateAction::make(),

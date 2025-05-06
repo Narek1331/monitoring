@@ -38,7 +38,7 @@ class NotificationService
                     if($reportContact->type->slug == 'email')
                     {
                         $this->sendEmailNotification($reportContact->email,$taskMessage->text);
-                    }else if($reportContact->type->slug == 'telegram')
+                    }else if($reportContact->type->slug == 'telegram' && $reportContact->status)
                     {
                         if($telegramUser = TelegramUser::where('token',$reportContact->tg_verification_code)->first())
                         {
@@ -63,7 +63,7 @@ class NotificationService
                         {
                             $this->sendEmailNotification($reportContact->email,$taskMessage->text);
                         }
-                        else if($reportContact->type->slug == 'telegram')
+                        else if($reportContact->type->slug == 'telegram' && $reportContact->status)
                         {
                             if($telegramUser = TelegramUser::where('token',$reportContact->tg_verification_code)->first())
                             {
