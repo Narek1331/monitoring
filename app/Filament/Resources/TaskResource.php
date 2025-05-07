@@ -255,7 +255,10 @@ class TaskResource extends Resource
             ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                ReplicateAction::make(),
+                ReplicateAction::make()
+                ->modalHeading(function ($record){
+                    return "Копировать задание " . $record->name;
+                })
 
             ])
             ->bulkActions([

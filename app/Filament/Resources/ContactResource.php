@@ -31,7 +31,7 @@ use Filament\Tables\Columns\{
 class ContactResource extends Resource
 {
     use \App\Traits\User\GetHelper;
-    
+
     protected static ?string $model = Contact::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
@@ -64,7 +64,7 @@ class ContactResource extends Resource
                         ->reactive(),
                     Section::make('')
                         ->schema(function($get){
-                            
+
                             if($contactType = ContactType::find($get('type_id')))
                             {
                                 if($contactType->slug == 'email')
@@ -105,7 +105,7 @@ class ContactResource extends Resource
 
         ];
     }
-    
+
     public static function phoneTemplate()
     {
         return [
@@ -118,7 +118,7 @@ class ContactResource extends Resource
 
         ];
     }
-    
+
     public static function telegramTemplate()
     {
         return [
@@ -131,7 +131,7 @@ class ContactResource extends Resource
 
         ];
     }
-    
+
     public static function httpCodeTemplate()
     {
         return [

@@ -20,4 +20,9 @@ class EditTask extends EditRecord
         return 'Редактирование';
     }
 
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
+    }
+
 }
