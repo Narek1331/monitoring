@@ -175,7 +175,8 @@ class ContactResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->modalHeading('Удалить отмеченное')
                 ]),
             ]);
     }
