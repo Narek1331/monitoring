@@ -40,9 +40,11 @@ class NotificationService
                         $this->sendEmailNotification($reportContact->email,$taskMessage->text);
                     }else if($reportContact->type->slug == 'telegram' && $reportContact->status)
                     {
-                        if($telegramUser = TelegramUser::where('token',$reportContact->tg_verification_code)->first())
-                        {
-                            $this->telegramService->sendMessage($telegramUser->chat_id,$taskMessage->text);
+                        if (strpos($taskMessage->text, '.swp') == false) {
+                            if($telegramUser = TelegramUser::where('token',$reportContact->tg_verification_code)->first())
+                            {
+                                $this->telegramService->sendMessage($telegramUser->chat_id,$taskMessage->text);
+                            }
                         }
                     }
                 }
@@ -65,9 +67,11 @@ class NotificationService
                         }
                         else if($reportContact->type->slug == 'telegram' && $reportContact->status)
                         {
-                            if($telegramUser = TelegramUser::where('token',$reportContact->tg_verification_code)->first())
-                            {
-                                $this->telegramService->sendMessage($telegramUser->chat_id,$taskMessage->text);
+                            if (strpos($taskMessage->text, '.swp') == false) {
+                                if($telegramUser = TelegramUser::where('token',$reportContact->tg_verification_code)->first())
+                                {
+                                    $this->telegramService->sendMessage($telegramUser->chat_id,$taskMessage->text);
+                                }
                             }
                         }
                     }
