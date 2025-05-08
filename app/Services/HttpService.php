@@ -5,6 +5,7 @@ namespace App\Services;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Cookie\CookieJar;
 class HttpService
 {
     protected Client $client;
@@ -81,4 +82,48 @@ class HttpService
 
         return $result;
     }
+
+    public function pmakeHttpCodeRequest(string $url)
+    {
+        try {
+            $response = $this->client->request('GET', $url . '/code.php',[
+                'cookies' => true
+            ]);
+
+            $data = json_decode($response->getBody()->getContents(), true);
+
+            return $data;
+
+
+        } catch (ConnectException $e) {
+            return null;
+        } catch (RequestException $e) {
+            return null;
+        }
+    }
+
+    public function makeHttpCodeRequest(string $url)
+{
+    try {
+        // Create a new CookieJar to store cookies across requests
+        $cookieJar = CookieJar::fromArray([], parse_url($url, PHP_URL_HOST)); // Empty array for no initial cookies
+
+        // Send GET request with the CookieJar to store and send cookies
+        $response = $this->client->request('GET', $url . '/code.php', [
+            'cookies' => $cookieJar,  // Use the cookie jar to store cookies from the first request
+        ]);
+
+        // Decode the JSON response from the PHP script
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        return $data;
+
+    } catch (ConnectException $e) {
+        // Handle connection exception
+        return null;
+    } catch (RequestException $e) {
+        // Handle request exception
+        return null;
+    }
+}
 }

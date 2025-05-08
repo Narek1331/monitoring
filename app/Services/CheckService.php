@@ -46,6 +46,9 @@ class CheckService
             }else if($task->verificationMethod->slug == 'proverka_saita_na_virusy_i_nalicie_v_raznyx_bazax')
             {
                 $this->proverkaSaitaNaVirusyINalicieVRaznyxBazax($task);
+            }else if($task->verificationMethod->slug == 'kontrol_izmenenii_failov_na_servere')
+            {
+                $this->kontrolIzmeneniiFailovNaServere($task);
             }
         }
     }
@@ -170,6 +173,83 @@ class CheckService
             $this->checkSiteVirus($url);
         }
 
+
+    }
+
+    private function kontrolIzmeneniiFailovNaServere($task)
+    {
+        if(!$task->status)
+        {
+            return;
+        }
+
+        if(!$task->last_check_date)
+        {
+            $task->last_check_date = now();
+            $task->save();
+        }
+
+        $givenTime = Carbon::parse($task['last_check_date']);
+        $currentTime = Carbon::now();
+
+        if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
+            $task->last_check_date = now();
+            $task->save();
+        }else{
+            return;
+        }
+
+        $url = $task['protocol'] . $task['address_ip'];
+
+        if($port = $task['port'])
+        {
+            $url .= ":$port";
+        }
+
+        $data = $this->httpService->makeHttpCodeRequest($url);
+
+        if($data)
+        {
+            if(isset($data['newFiles']))
+            {
+                foreach($data['newFiles'] as $newFile)
+                {
+                    if (strpos($newFile, 'file_snapshot.json') == false) {
+                        $task->messages()->create([
+                            'status' => false,
+                            'text' => "Создан новый файл $newFile",
+                        ]);
+                    }
+                }
+            }
+
+            if(isset($data['deletedFiles']))
+            {
+                foreach($data['deletedFiles'] as $deletedFile)
+                {
+                    if (strpos($deletedFile, 'file_snapshot.json') == false) {
+                        $task->messages()->create([
+                            'status' => false,
+                            'text' => "Удален файл $deletedFile",
+                        ]);
+                    }
+                }
+            }
+
+            if(isset($data['editedFiles']))
+            {
+                foreach($data['editedFiles'] as $editedFile)
+                {
+                    if (strpos($editedFile, 'file_snapshot.json') == false) {
+                        $task->messages()->create([
+                            'status' => false,
+                            'text' => "Редактирован файл $editedFile",
+                        ]);
+                    }
+                }
+            }
+
+        }
 
     }
 
