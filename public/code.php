@@ -14,7 +14,7 @@ function logChange($changeType, $filePath) {
         'file' => $filePath
     ];
 
-    $ch = curl_init("http://monitoring.loc/webhook/task/" . TOKEN);
+    $ch = curl_init("https://iqm-tools.ru/webhook/task/" . TOKEN);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
