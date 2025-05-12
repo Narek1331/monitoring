@@ -3,6 +3,6 @@
         <p class="mb-4">
             1. <a style="color: blue !important; text-decoration: underline;" href="{{ route('download.code') }}" download="code.php" class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-600">Загрузите этот файл</a>
         </p>
-        <p class="mb-4">2.Разместите его в корневой директории вашего веб-сайта. Убедитесь, что он доступен по следующему адресу: https://ваш-домен.ru/check.php</p>
+        <p class="mb-4">2.Разместите его в корневой директории вашего веб-сайта. Убедитесь, что он доступен по следующему адресу: https://ваш-домен.ru/code.php</p>
     </div>
 </div>
