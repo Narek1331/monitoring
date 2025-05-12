@@ -26,7 +26,8 @@ use Filament\Forms\Components\{
     Toggle,
     Textarea,
     CheckboxList,
-    Placeholder
+    Placeholder,
+    MultiSelect
 };
 use Filament\Tables\Columns\{
     TextColumn,
@@ -414,11 +415,20 @@ class TaskResource extends Resource
     {
         $form = [];
 
-        $form[] = Select::make('reportContacts')
+        $form[] = MultiSelect::make('reportContacts')
             ->disablePlaceholderSelection(true)
             ->multiple()
             ->relationship('reportContacts','id')
             ->label('Контакты для отправки уведомлений об ошибках')
+            ->searchable()
+            ->suffixAction(function (Select $component) {
+                return Action::make('remove_all')
+                    ->icon('heroicon-s-x-circle')
+                    ->tooltip('Очистить')
+                    ->action(function () use ($component) {
+                        $component->state([]);
+                    });
+            })
             ->columnSpan(1)
             ->preload()
             ->options(function(){
@@ -498,11 +508,20 @@ class TaskResource extends Resource
     {
         $form = [];
 
-        $form[] = Select::make('reportContacts')
+        $form[] = MultiSelect::make('reportContacts')
             ->disablePlaceholderSelection(true)
             ->multiple()
             ->relationship('reportContacts','id')
             ->label('Контакты для отправки уведомлений об ошибках')
+            ->searchable()
+            ->suffixAction(function (Select $component) {
+                return Action::make('remove_all')
+                    ->icon('heroicon-s-x-circle')
+                    ->tooltip('Очистить')
+                    ->action(function () use ($component) {
+                        $component->state([]);
+                    });
+            })
             ->options(function(){
 
                 $datas = auth()->user()
@@ -553,11 +572,20 @@ class TaskResource extends Resource
     {
         $form = [];
 
-        $form[] = Select::make('reportContacts')
+        $form[] = MultiSelect::make('reportContacts')
             ->disablePlaceholderSelection(true)
             ->multiple()
             ->relationship('reportContacts','id')
             ->label('Контакты для отправки уведомлений об ошибках')
+            ->searchable()
+            ->suffixAction(function (Select $component) {
+                return Action::make('remove_all')
+                    ->icon('heroicon-s-x-circle')
+                    ->tooltip('Очистить')
+                    ->action(function () use ($component) {
+                        $component->state([]);
+                    });
+            })
             ->options(function(){
 
                 $datas = auth()->user()
