@@ -230,7 +230,7 @@ class TaskResource extends Resource
                         ])
                 ])
                 ->nextAction(
-                    fn (Action $action) => $action->label('Следующий'),
+                    fn (Action $action) => $action->label('Далее'),
                 )
                 ->columnSpan('full')
 
