@@ -22,5 +22,16 @@ class CreateTask extends CreateRecord
     {
         return static::getResource()::getUrl('index');
     }
+    protected function getCreateFormAction(): \Filament\Actions\Action
+    {
+        return parent::getCreateFormAction()
+            ->label('Сохранить');
+    }
+
+    protected function getCreateAnotherFormAction(): \Filament\Actions\Action
+    {
+        return parent::getCreateAnotherFormAction()
+            ->label('Сохранить и создать ещё');
+    }
 
 }
