@@ -55,6 +55,7 @@ return new class extends Migration
             $table->boolean('set_as_template')->nullable()->default(false);
             $table->dateTime('last_check_date')->nullable();
             $table->string('token')->nullable();
+            $table->string('ignored_directories')->nullable();
 
             $table->timestamps();
 

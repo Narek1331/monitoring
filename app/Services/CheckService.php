@@ -214,6 +214,10 @@ class CheckService
             {
                 foreach($data['newFiles'] as $newFile)
                 {
+                    if(!$this->checkIgnoredDirs($newFile,$task->ignored_directories))
+                    {
+                        continue;
+                    }
                     if (strpos($newFile, 'file_snapshot.json') == false) {
                         $task->messages()->create([
                             'status' => false,
@@ -227,6 +231,10 @@ class CheckService
             {
                 foreach($data['deletedFiles'] as $deletedFile)
                 {
+                    if(!$this->checkIgnoredDirs($deletedFile,$task->ignored_directories))
+                    {
+                        continue;
+                    }
                     if (strpos($deletedFile, 'file_snapshot.json') == false) {
                         $task->messages()->create([
                             'status' => false,
@@ -240,10 +248,14 @@ class CheckService
             {
                 foreach($data['editedFiles'] as $editedFile)
                 {
+                    if(!$this->checkIgnoredDirs($editedFile,$task->ignored_directories))
+                    {
+                        continue;
+                    }
                     if (strpos($editedFile, 'file_snapshot.json') == false) {
                         $task->messages()->create([
                             'status' => false,
-                            'text' => "Редактирован файл $editedFile",
+                            'text' => "Отредактирован файл $editedFile",
                         ]);
                     }
                 }
@@ -252,6 +264,30 @@ class CheckService
         }
 
     }
+
+    private function checkIgnoredDirs(string $filePath, string $ignoredDirectories): bool
+    {
+        $ignoredDirs = array_map('trim', explode(',', $ignoredDirectories));
+
+        if (empty($ignoredDirs)) {
+            return true;
+        }
+
+        foreach ($ignoredDirs as $dir) {
+            if (strpos($dir, '.') !== false) {
+                if (strpos($filePath, $dir) !== false) {
+                    return false;
+                }
+            } else {
+                if (strpos($filePath, "/$dir/") !== false) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
 
     private function checkDomainPaidTill($task)
     {
