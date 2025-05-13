@@ -8,6 +8,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/check', function (\App\Services\CheckService $checkService) {
+    $checkService->index();
+});
+
+Route::get('/notification', function (\App\Services\NotificationService $notificationService) {
+    $notificationService->send();
+});
+
+Route::get('/backup', function (\App\Services\BackupService $backupService) {
+    $backupService->dailyBackupTaskMessages();
+});
 
 Route::group(['prefix'=>'webhook'], function () {
     Route::post('/telegram', [TelegramController::class, 'index'])->name('webhook.telegram');
