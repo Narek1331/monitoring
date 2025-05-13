@@ -64,7 +64,7 @@ class BackupService
                 $randomFileName = 'exports/data-' . Str::random(10) . '.xlsx';
                 $excel = Excel::store(new ReportExport($data), $randomFileName,'public');
 
-                $textMessage = "Резервное копирование: " . env('APP_URL') . "/storage/$randomFileName";
+               $textMessage = "Резервное копирование: <a href='" . env('APP_URL') . "/storage/$randomFileName'>Скачать резерв</a>";
 
                 if($excel)
                 {
