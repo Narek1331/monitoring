@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Webhook\TelegramController;
 use App\Http\Controllers\Webhook\TaskController;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,6 +20,16 @@ Route::get('/notification', function (\App\Services\NotificationService $notific
 Route::get('/backup', function (\App\Services\BackupService $backupService) {
     $backupService->dailyBackupTaskMessages();
 });
+
+Route::get('/storage/exports/{filename}', function ($filename) {
+    $filePath = 'public/exports/' . $filename;
+
+    if (!Storage::exists($filePath)) {
+        abort(404, 'File not found');
+    }
+
+    return Storage::download($filePath);
+})->where('filename', '.*');
 
 Route::group(['prefix'=>'webhook'], function () {
     Route::post('/telegram', [TelegramController::class, 'index'])->name('webhook.telegram');
