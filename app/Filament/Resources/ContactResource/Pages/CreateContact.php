@@ -30,4 +30,9 @@ class CreateContact extends CreateRecord
             ->label('Сохранить и создать ещё');
     }
 
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
+    }
+
 }

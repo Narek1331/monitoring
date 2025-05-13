@@ -220,6 +220,7 @@ class TaskResource extends Resource
 
                         ])
                 ])
+                ->skippable()
                 ->nextAction(
                     fn (Action $action) => $action->label('Далее'),
                 )
