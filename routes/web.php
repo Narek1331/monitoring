@@ -9,17 +9,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/check', function (\App\Services\CheckService $checkService) {
-    $checkService->index();
-});
+// Route::get('/check', function (\App\Services\CheckService $checkService) {
+//     $checkService->index();
+// });
 
-Route::get('/notification', function (\App\Services\NotificationService $notificationService) {
-    $notificationService->send();
-});
+// Route::get('/notification', function (\App\Services\NotificationService $notificationService) {
+//     $notificationService->send();
+// });
 
-Route::get('/backup', function (\App\Services\BackupService $backupService) {
-    $backupService->dailyBackupTaskMessages();
-});
+// Route::get('/backup', function (\App\Services\BackupService $backupService) {
+//     $backupService->dailyBackupTaskMessages();
+// });
 
 Route::get('/storage/exports/{filename}', function ($filename) {
     $filePath = 'public/exports/' . $filename;
