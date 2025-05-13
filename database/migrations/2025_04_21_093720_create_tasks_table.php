@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('verification_method_id');
-            $table->unsignedBigInteger('inspection_cost_id');
+            $table->bigInteger('inspection_cost_id')->nullable();
             $table->boolean('status')->default(true);
             $table->string('name')->nullable();
             $table->string('protocol')->default('http://');

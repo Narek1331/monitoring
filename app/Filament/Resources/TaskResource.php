@@ -38,6 +38,7 @@ use Filament\Forms\Components\Actions\Action;
 use Filament\Tables\Actions\ReplicateAction;
 use Filament\Infolists\Components\View;
 use App\Filament\Forms\Components\InfoBox;
+use Filament\Tables\Filters\SelectFilter;
 class TaskResource extends Resource
 {
     use \App\Traits\User\GetHelper;
@@ -217,16 +218,6 @@ class TaskResource extends Resource
                                 ->columnSpan(1)
                                 ->helperText('Выберите контакты, на которые мы будем отправлять отчеты. Не более 10 контактов.')
 
-                        ]),
-                        Wizard\Step::make('Стоимость проверок')
-                        ->icon('heroicon-m-banknotes')
-                        ->schema([
-                            Radio::make('inspection_cost_id')
-                            ->label('')
-                            ->required()
-                            ->options(InspectionCost::pluck('title','id')->toArray())
-                            ->descriptions(InspectionCost::pluck('description','id')->toArray())
-                            ->reactive()
                         ])
                 ])
                 ->nextAction(
@@ -253,7 +244,17 @@ class TaskResource extends Resource
                     ->sortable()
                     ->dateTime(),
             ])
-            ->filters([])
+            ->filters([
+            SelectFilter::make('verification_method_id')
+            ->label('Статус файла')
+            ->options([
+                '1' => 'Проверка доступности',
+                '2' => 'Проверка на вирусы',
+                '3' => 'Контроль изменений',
+            ])
+
+
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 ReplicateAction::make()
