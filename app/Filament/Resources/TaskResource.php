@@ -246,7 +246,7 @@ class TaskResource extends Resource
             ])
             ->filters([
             SelectFilter::make('verification_method_id')
-            ->label('Статус файла')
+            ->label('Метод проверки')
             ->options([
                 '1' => 'Проверка доступности',
                 '2' => 'Проверка на вирусы',
