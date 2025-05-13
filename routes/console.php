@@ -10,3 +10,7 @@ use Illuminate\Support\Facades\Schedule;
 
 Schedule::command('app:check')->everyMinute();
 Schedule::command('app:send-notification')->everyMinute();
+
+Schedule::command('app:daily-backup-task-message')->daily();
+Schedule::command('app:weekly-backup-task-message')->weekly();
+Schedule::command('app:monthly-backup-task-message')->monthly();

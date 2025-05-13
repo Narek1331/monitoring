@@ -6,8 +6,19 @@ use Carbon\Carbon;
 use App\Models\Task;
 use App\Exports\TaskMessageExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReportExport;
+use Illuminate\Support\Str;
+use App\Models\TelegramUser;
+use App\Notifications\SendEmailNotification;
+use Illuminate\Support\Facades\Notification;
 class BackupService
 {
+    public $telegramService;
+
+    public function __construct(TelegramService $telegramService)
+    {
+        $this->telegramService = $telegramService;
+    }
     public function dailyBackupTaskMessages()
     {
         $this->backupTaskMessages('every_day');
@@ -50,10 +61,35 @@ class BackupService
         foreach ($tasks as $task) {
             if ($task->reportFrequencies()->where('slug', $frequencySlug)->exists()) {
                 $data = $task->messages()->whereBetween('created_at', [$frequency, $now])->get();
-                return $data;
+                $randomFileName = 'exports/data-' . Str::random(10) . '.xlsx';
+                $excel = Excel::store(new ReportExport($data), $randomFileName,'public');
+
+                $textMessage = "Резервное копирование: " . env('APP_URL') . "/storage/$randomFileName";
+
+                if($excel)
+                {
+                    foreach($task->errorNotificationContacts as $reportContact)
+                    {
+                        if($reportContact->type->slug == 'email')
+                        {
+                            $this->sendEmailNotification($reportContact->email,$textMessage);
+                        }else if($reportContact->type->slug == 'telegram' && $reportContact->status)
+                        {
+                            if($telegramUser = TelegramUser::where('token',$reportContact->tg_verification_code)->first())
+                            {
+                                $this->telegramService->sendMessage($telegramUser->chat_id,$textMessage);
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        return collect();
+    }
+
+    private function sendEmailNotification($email,$message)
+    {
+        Notification::route('mail', $email)->notify(new SendEmailNotification($message));
+
     }
 }

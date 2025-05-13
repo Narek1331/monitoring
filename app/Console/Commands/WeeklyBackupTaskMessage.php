@@ -4,14 +4,14 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class DailyBackupTaskMessage extends Command
+class WeeklyBackupTaskMessage extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:daily-backup-task-message';
+    protected $signature = 'app:weekly-backup-task-message';
 
     /**
      * The console command description.
@@ -25,6 +25,6 @@ class DailyBackupTaskMessage extends Command
      */
     public function handle(\App\Services\BackupService $backupService)
     {
-        $backupService->dailyBackupTaskMessages();
+        $backupService->weeklyBackupTaskMessages();
     }
 }
