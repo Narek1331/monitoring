@@ -171,7 +171,7 @@ class ContactResource extends Resource
             ])
             ->filters([
                  SelectFilter::make('type_id')
-                ->label('Метод проверки')
+                ->label('Тип аккаунта')
                 ->options(ContactType::get()->pluck('name','id'))
 
             ])
