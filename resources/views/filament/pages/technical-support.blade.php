@@ -1,7 +1,7 @@
 <x-filament-panels::page>
     <x-filament::card>
 
-        <div>
+        <div class="mb-4">
             <x-filament-forms::field-wrapper.label>
                 E-mail
             </x-filament-forms::field-wrapper.label>
@@ -13,7 +13,7 @@
             </x-filament::input.wrapper>
         </div>
 
-        <div>
+        <div class="mb-4">
             <x-filament-forms::field-wrapper.label>
                 Имя
             </x-filament-forms::field-wrapper.label>
@@ -25,7 +25,7 @@
             </x-filament::input.wrapper>
         </div>
 
-        <div>
+        <div class="mb-4">
             <x-filament-forms::field-wrapper.label>
                 Тема обращения
             </x-filament-forms::field-wrapper.label>
@@ -37,7 +37,7 @@
             </x-filament::input.wrapper>
         </div>
 
-        <div>
+        <div class="mb-4">
             <x-filament-forms::field-wrapper.label>
                 Сообщение
             </x-filament-forms::field-wrapper.label>
@@ -49,7 +49,7 @@
         </div>
 
         <x-filament::button wire:click="send" class="mt-2">
-            Отправлять
+            Отправить
         </x-filament::button>
 
 

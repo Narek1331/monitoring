@@ -25,7 +25,7 @@
 
         {{-- Вкладки --}}
         <div x-data="{ tab: 'topup' }" class="mt-6">
-            <div class="flex space-x-4 border-b mb-4">
+            <div class="flex space-x-4 mb-4">
                 <button
                     class="pb-2 border-b-2"
                     style="margin-right: 10px!important"
@@ -52,7 +52,7 @@
                 </button>
             </div>
 
-            <div x-show="tab === 'topup'">
+            {{-- <div x-show="tab === 'topup'">
                 <p class="text-gray-600">
                     Пополнить баланс
                 </p>
@@ -66,7 +66,7 @@
                 <p class="text-gray-600">
                     Счета и акты
                 </p>
-            </div>
+            </div> --}}
         </div>
     </x-filament::card>
 </x-filament::widget>
