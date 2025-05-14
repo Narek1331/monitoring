@@ -8,6 +8,6 @@ class TaskRepository
 {
     public function getAllTasks()
     {
-        return Task::all();
+        return Task::where('sample',0)->all();
     }
 }

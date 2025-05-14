@@ -31,7 +31,8 @@ use Filament\Forms\Components\{
 };
 use Filament\Tables\Columns\{
     TextColumn,
-    ToggleColumn
+    ToggleColumn,
+    IconColumn
 };
 use App\Models\VerificationMethod;
 use Filament\Forms\Components\Actions\Action;
@@ -233,6 +234,12 @@ class TaskResource extends Resource
     {
         return $table
             ->columns([
+                IconColumn::make('sample')
+                ->label('Шаблон')
+                ->icon(fn (string $state): string => match ($state) {
+                    '1' => 'heroicon-o-check',
+                    '0' => 'heroicon-o-x-mark',
+                }),
                 TextColumn::make('name')
                     ->label('Задание')
                     ->searchable()
@@ -246,13 +253,19 @@ class TaskResource extends Resource
                     ->dateTime(),
             ])
             ->filters([
+            SelectFilter::make('sample')
+                ->label('')
+                ->options([
+                    '0' => 'Без Шаблона',
+                    '1' => 'Только Шаблоны',
+                ]),
             SelectFilter::make('verification_method_id')
-            ->label('Метод проверки')
-            ->options([
-                '1' => 'Проверка доступности',
-                '2' => 'Проверка на вирусы',
-                '3' => 'Контроль изменений',
-            ])
+                ->label('Метод проверки')
+                ->options([
+                    '1' => 'Проверка доступности',
+                    '2' => 'Проверка на вирусы',
+                    '3' => 'Контроль изменений',
+                ])
 
 
             ])

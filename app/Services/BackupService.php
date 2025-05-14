@@ -42,7 +42,9 @@ class BackupService
      */
     private function backupTaskMessages(string $frequencySlug)
     {
-        $tasks = Task::where('status', true)->get();
+        $tasks = Task::where('status', true)
+        ->where('sample', 0)
+        ->get();
         $now = Carbon::now();
         $frequency = null;
 

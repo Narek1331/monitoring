@@ -57,6 +57,8 @@ return new class extends Migration
             $table->string('token')->nullable();
             $table->string('ignored_directories')->nullable();
 
+            $table->boolean('sample')->nullable()->default(false);
+
             $table->timestamps();
 
             $table->foreign('user_id')

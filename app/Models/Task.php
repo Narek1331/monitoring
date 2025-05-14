@@ -49,7 +49,8 @@ class Task extends Model
         'set_as_template',
         'last_check_date',
         'token',
-        'ignored_directories'
+        'ignored_directories',
+        'sample'
     ];
 
     protected $casts = [
