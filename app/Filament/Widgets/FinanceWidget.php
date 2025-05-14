@@ -8,7 +8,7 @@ use Carbon\Carbon;
 class FinanceWidget extends Widget
 {
     protected static string $view = 'filament.widgets.finance-widget';
-    protected int | string | array $columnSpan = 'full';
+    // protected int | string | array $columnSpan = '2';
 
     protected static ?int $sort = 2;
 
