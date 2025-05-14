@@ -26,30 +26,27 @@
         {{-- Вкладки --}}
         <div x-data="{ tab: 'topup' }" class="mt-6">
             <div class="flex space-x-4 mb-4">
-                <button
+                <a
+                    href="/account/top-up-balance"
                     class="pb-2 border-b-2"
                     style="margin-right: 10px!important"
-                    :class="tab === 'topup' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500'"
-                    @click="tab = 'topup'"
                 >
                     Пополнить баланс
-                </button>
-                <button
+                </a>
+                <a
+                    href="/account/account-movements"
                     class="pb-2 border-b-2"
                     style="margin-right: 10px!important"
-                    :class="tab === 'transactions' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500'"
-                    @click="tab = 'transactions'"
                 >
                     Движения по счету
-                </button>
-                <button
+                </a>
+                <a
+                    href="/account/invoices-and-acts"
                     class="pb-2 border-b-2"
                     style="margin-right: 10px!important"
-                    :class="tab === 'docs' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500'"
-                    @click="tab = 'docs'"
                 >
                     Счета и акты
-                </button>
+                </a>
             </div>
 
             {{-- <div x-show="tab === 'topup'">
