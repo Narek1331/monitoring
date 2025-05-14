@@ -27,6 +27,8 @@ use Filament\Tables\Columns\{
     TextColumn,
     ToggleColumn
 };
+use Filament\Tables\Filters\SelectFilter;
+
 
 class ContactResource extends Resource
 {
@@ -168,7 +170,10 @@ class ContactResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                 SelectFilter::make('type_id')
+                ->label('Метод проверки')
+                ->options(ContactType::get()->pluck('name','id'))
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
