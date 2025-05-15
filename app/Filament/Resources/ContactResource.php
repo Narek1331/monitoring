@@ -48,7 +48,7 @@ class ContactResource extends Resource
 
     protected static ?string $navigationLabelName = 'Контакты';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {

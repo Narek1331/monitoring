@@ -10,7 +10,7 @@ class LastTaskMessages extends Widget
 {
     protected static string $view = 'filament.widgets.last-task-messages';
 
-    // protected int|string|array $columnSpan = '5';
+    protected int|string|array $columnSpan = 'full';
 
         protected static ?int $sort = 4;
 

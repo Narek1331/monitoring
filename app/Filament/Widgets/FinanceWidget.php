@@ -10,7 +10,7 @@ class FinanceWidget extends Widget
     protected static string $view = 'filament.widgets.finance-widget';
     // protected int | string | array $columnSpan = '2';
 
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 3;
 
     public function getViewData(): array
     {

@@ -16,6 +16,6 @@ class UsefulInformationWidget extends Widget
 
     // protected int | string | array $columnSpan = '6';
 
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 2;
 
 }

@@ -59,7 +59,7 @@ class TaskResource extends Resource
 
     protected static ?string $navigationLabelName = 'Задания';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

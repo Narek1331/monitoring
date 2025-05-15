@@ -22,6 +22,9 @@ class TechnicalSupport extends Page
 
     protected static ?string $title = 'Техническая поддержка';
 
+    protected static ?int $navigationSort = 6;
+
+
     public $email = '';
     public $name = '';
     public $subject = '';
