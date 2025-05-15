@@ -104,7 +104,6 @@ class ContactResource extends Resource
                 ->label('Ваш e-mail')
                 ->required()
                 ->columnSpan(1)
-
         ];
     }
 
