@@ -12,5 +12,5 @@
 {{ $support->message }}
 
 Спасибо,
-{{ config('app.name') }}
+{{ env('APP_NAME') }}
 @endcomponent
