@@ -49,6 +49,9 @@ class CheckService
             }else if($task->verificationMethod->slug == 'kontrol_izmenenii_failov_na_servere')
             {
                 $this->kontrolIzmeneniiFailovNaServere($task);
+            }else if($task->verificationMethod->slug == 'monitoring_naliciia_ssylok_i_html_koda')
+            {
+                $this->monitoringNaliciiaSsylokIHtmlKoda($task);
             }
         }
     }
@@ -412,6 +415,117 @@ class CheckService
         }
 
         return $links;
+    }
+
+    public function extractSeoLinksAndSrcs($html): array
+    {
+        libxml_use_internal_errors(true);
+        $dom = new \DOMDocument();
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+
+        $links = [];
+
+        // Extract from <a href="">
+        foreach ($dom->getElementsByTagName('a') as $element) {
+            $href = $element->getAttribute('href');
+            if (!empty($href)) {
+                $links[] = $href;
+            }
+        }
+
+        // Extract from <link href="">
+        foreach ($dom->getElementsByTagName('link') as $element) {
+            $href = $element->getAttribute('href');
+            if (!empty($href)) {
+                $links[] = $href;
+            }
+        }
+
+        // Extract from tags with src attribute
+        $tagsWithSrc = ['img', 'script', 'iframe', 'source', 'video', 'audio'];
+        foreach ($tagsWithSrc as $tag) {
+            foreach ($dom->getElementsByTagName($tag) as $element) {
+                $src = $element->getAttribute('src');
+                if (!empty($src)) {
+                    $links[] = $src;
+                }
+            }
+        }
+
+        // Extract from meta tags (Open Graph, Twitter, etc.)
+        $metaUrlProps = ['og:image', 'og:url', 'twitter:image', 'twitter:url'];
+        foreach ($dom->getElementsByTagName('meta') as $element) {
+            $property = $element->getAttribute('property');
+            $name = $element->getAttribute('name');
+            $content = $element->getAttribute('content');
+
+            if (!empty($content)) {
+                if (in_array($property, $metaUrlProps) || in_array($name, $metaUrlProps)) {
+                    $links[] = $content;
+                }
+            }
+        }
+
+        return array_values(array_unique($links)); // Remove duplicates and reindex
+    }
+
+
+    private function monitoringNaliciiaSsylokIHtmlKoda($task)
+    {
+        // if(!$task->status)
+        // {
+        //     return;
+        // }
+
+        // if(!$task->last_check_date)
+        // {
+        //     $task->last_check_date = now();
+        //     $task->save();
+        // }
+
+        // $givenTime = Carbon::parse($task['last_check_date']);
+        // $currentTime = Carbon::now();
+
+        // if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
+        //     $task->last_check_date = now();
+        //     $task->save();
+        // }else{
+        //     return;
+        // }
+
+        $url = $task['protocol'] . $task['address_ip'];
+        $errorMessage = $task->error_message;
+
+        if($port = $task['port'])
+        {
+            $url .= ":$port";
+        }
+
+        $httpData = $this->httpService->makeSimpleRequest($url,$task);
+
+        $httpStatusCode = $httpData['status'] ?? 500;
+
+        if($httpData && isset($httpData['html']))
+        {
+
+            $linkArray = $this->extractSeoLinksAndSrcs($httpData['html']);
+
+            foreach($task->links as $link)
+            {
+                if(!in_array($link->link, $linkArray))
+                {
+                    $taskName = $task->name;
+                    $linkName = $link->link;
+
+                        $task->messages()->create([
+                        'status' => false,
+                        'text' => $errorMessage ?? "На $taskName отсутствует ссылка на $linkName",
+                    ]);
+                }
+            }
+
+        }
     }
 
 

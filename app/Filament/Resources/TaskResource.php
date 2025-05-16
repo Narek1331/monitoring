@@ -26,8 +26,8 @@ use Filament\Forms\Components\{
     Toggle,
     Textarea,
     CheckboxList,
-    Placeholder,
-    MultiSelect
+    MultiSelect,
+    Repeater
 };
 use Filament\Tables\Columns\{
     TextColumn,
@@ -96,6 +96,9 @@ class TaskResource extends Resource
                             }else if($verificationMethodId == 3)
                             {
                                 return [...self::siteCheckThirdTemplate()];
+                            }else if($verificationMethodId == 4)
+                            {
+                                return [...self::siteCheckFourthTemplate()];
                             }
 
                             return [];
@@ -170,6 +173,9 @@ class TaskResource extends Resource
                             }else if($verificationMethodId == 3)
                             {
                                 return [...self::notificationSettingsThirdTemplate()];
+                            }else if($verificationMethodId == 4)
+                            {
+                                return [...self::notificationSettingsFourthTemplate()];
                             }
 
                             return [];
@@ -189,6 +195,9 @@ class TaskResource extends Resource
                             }else if($verificationMethodId == 3)
                             {
                                 return [...self::additionalSettingsSecondTemplate()];
+                            }else if($verificationMethodId == 4)
+                            {
+                                return [...self::additionalSettingsFourthTemplate()];
                             }
 
                             return [];
@@ -332,6 +341,45 @@ class TaskResource extends Resource
             ->default(false)
             ->columnSpan(1)
             ->helperText('Если поставить здесь галочку, то мы будем проверять отсутствие на вашем сайте вирусных вставок, редиректов (мобильных, поисковых и др.), проверять ваш сайт по базам VirusTotal, Роскомнадзора, антивирусов, черным спискам Яндекса и Google. В случае любых отклонений от нормы уведомляем вас.');
+
+        return $form;
+    }
+
+    public static function siteCheckFourthTemplate()
+    {
+        $form = [];
+
+
+        $form[] = TextInput::make('name')
+            ->label('Название задания')
+            ->required()
+            ->columnSpan(1)
+            ->helperText('Это название вы будете видеть в списке всех заданий, а также получать в уведомлениях об ошибках.');
+
+        $form[] = Grid::make(3)
+            ->schema([
+                Select::make('protocol')
+                    ->label('Протокол')
+                    ->required()
+                    ->columnSpan(1)
+                    ->options([
+                        'http://' => 'http://',
+                        'https://' => 'https://',
+                        'ip:' => 'ip:',
+                    ])
+                    ->disablePlaceholderSelection(true)
+                    ->default('http://'),
+
+                TextInput::make('address_ip')
+                    ->label('Адрес сайта или IP сервера')
+                    ->required()
+                    ->columnSpan(2)
+            ]);
+
+        $form[] = TextInput::make('port')
+            ->label('Порт (в случае необходимости проверки определенного порта):')
+            ->columnSpan(1)
+            ->helperText('Вы можете указать порт для проверки, если он отличный от стандартного. Если вы не знаете что это такое, значит можете ничего не указывать.');
 
         return $form;
     }
@@ -510,6 +558,61 @@ class TaskResource extends Resource
         //     ->default(false)
         //     ->columnSpan(1)
         //     ->helperText('Вы можете подписаться на RSS ленту со статусами своего задания и получать уведомления об ошибках через RSS. Если хотите - поставьте галочку.');
+
+        $form[] = Textarea::make('error_message')
+            ->label('Информация для письма с уведомлением об ошибке')
+            ->columnSpan(1)
+            ->helperText('Вы можете указать какую информацию включать в письмо на e-mail с уведомлением об ошибке. Например, команду для перезагрузки сервера или информацию о том, в каком дата-центре сервер (или у какого хостинг-провайдера куплен хостинг для сайта) и как связаться со службой поддержки. Не более 300 символов. Необязательно для заполнения.');
+
+            return $form;
+    }
+
+    public static function notificationSettingsFourthTemplate()
+    {
+        $form = [];
+
+        $form[] = MultiSelect::make('reportContacts')
+            ->disablePlaceholderSelection(true)
+            ->multiple()
+            ->relationship('reportContacts','id')
+            ->label('Контакты для отправки уведомлений об ошибках')
+            ->searchable()
+            ->suffixAction(function (Select $component) {
+                return Action::make('remove_all')
+                    ->icon('heroicon-s-x-circle')
+                    ->tooltip('Очистить')
+                    ->action(function () use ($component) {
+                        $component->state([]);
+                    });
+            })
+            ->columnSpan(1)
+            ->preload()
+            ->options(function(){
+
+                $datas = auth()->user()
+                ->contacts
+                ->mapWithKeys(fn ($contact) => [
+                    $contact->id => $contact->name ?: $contact->email,
+                ])
+                ->toArray();
+
+                return $datas;
+            })
+            ->helperText('Выберите контакты, на которые мы будем отправлять уведомления об ошибках в работе задания и о восстановлении после ошибки. Не более 30 контактов.');
+
+
+        $form[] = Select::make('error_notification_threshold')
+            ->label('После скольких ошибок отправлять уведомления')
+            ->columnSpan(1)
+            ->options([
+                1 => 'Сразу после первой ошибки',
+                2 => 'После 2 ошибок подряд',
+                3 => 'После 3 ошибок подряд',
+                5 => 'После 5 ошибок подряд',
+            ])
+            ->default(1)
+            ->disablePlaceholderSelection(true)
+            ->helperText('Для предотвращения ложных срабатываний системы, рекомендуем установить отправку уведомлений после 2 ошибок (подряд). Это предотвратит ложные срабатывания, и в тоже время вы узнаете об ошибке.');
 
         $form[] = Textarea::make('error_message')
             ->label('Информация для письма с уведомлением об ошибке')
@@ -778,6 +881,38 @@ class TaskResource extends Resource
             //     ->label('Установить задание как образец')
             //     ->default(false)
             //     ->columnSpan(1),
+        ];
+    }public static function additionalSettingsFourthTemplate(): array
+    {
+        return [
+
+            Repeater::make('links')
+            ->relationship('links')
+            ->label('Ссылки')
+            ->schema([
+                TextInput::make('link')
+                ->label('Ссылка')
+
+            ])
+             ->addActionLabel('Добавлять ссылки')
+            ->columns(1),
+
+            Select::make('timezone')
+                ->label('Мое время')
+                ->options([
+                    '-12' => '(Москва -12 ч.)', '-11' => '(Москва -11 ч.)', '-10' => '(Москва -10 ч.)',
+                    '-9' => '(Москва -9 ч.)', '-8' => '(Москва -8 ч.)', '-7' => '(Москва -7 ч.)',
+                    '-6' => '(Москва -6 ч.)', '-5' => '(Москва -5 ч.)', '-4' => '(Москва -4 ч.)',
+                    '-3' => '(Москва -3 ч.)', '-2' => '(Москва -2 ч.)', '-1' => '(Москва -1 ч.)',
+                    '0' => '(Москва)', '1' => '(Москва +1 ч.)', '2' => '(Москва +2 ч.)',
+                    '3' => '(Москва +3 ч.)', '4' => '(Москва +4 ч.)', '5' => '(Москва +5 ч.)',
+                    '6' => '(Москва +6 ч.)', '7' => '(Москва +7 ч.)', '8' => '(Москва +8 ч.)',
+                    '9' => '(Москва +9 ч.)', '10' => '(Москва +10 ч.)',
+                ])
+                ->disablePlaceholderSelection()
+                ->default('0')
+                ->columnSpan(1)
+                ->helperText('Время в выбранном часовом поясе будет использоваться в логах и уведомлениях.'),
         ];
     }
 
