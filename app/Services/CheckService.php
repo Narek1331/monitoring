@@ -473,26 +473,26 @@ class CheckService
 
     private function monitoringNaliciiaSsylokIHtmlKoda($task)
     {
-        // if(!$task->status)
-        // {
-        //     return;
-        // }
+        if(!$task->status)
+        {
+            return;
+        }
 
-        // if(!$task->last_check_date)
-        // {
-        //     $task->last_check_date = now();
-        //     $task->save();
-        // }
+        if(!$task->last_check_date)
+        {
+            $task->last_check_date = now();
+            $task->save();
+        }
 
-        // $givenTime = Carbon::parse($task['last_check_date']);
-        // $currentTime = Carbon::now();
+        $givenTime = Carbon::parse($task['last_check_date']);
+        $currentTime = Carbon::now();
 
-        // if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
-        //     $task->last_check_date = now();
-        //     $task->save();
-        // }else{
-        //     return;
-        // }
+        if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
+            $task->last_check_date = now();
+            $task->save();
+        }else{
+            return;
+        }
 
         $url = $task['protocol'] . $task['address_ip'];
         $errorMessage = $task->error_message;
