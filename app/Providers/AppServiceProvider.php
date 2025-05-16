@@ -3,8 +3,14 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Models\Task;
-use App\Observers\TaskObserver;
+use App\Models\{
+    Task,
+    TechnicalSupport
+};
+use App\Observers\{
+    TaskObserver,
+    TechnicalSupportObserver
+};
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Task::observe(TaskObserver::class);
+        TechnicalSupport::observe(TechnicalSupportObserver::class);
     }
 }
