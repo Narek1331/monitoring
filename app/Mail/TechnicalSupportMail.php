@@ -6,9 +6,8 @@ use App\Models\TechnicalSupport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class TechnicalSupportMail extends Mailable implements ShouldQueue
+class TechnicalSupportMail extends Mailable
 {
     use Queueable, SerializesModels;
 
