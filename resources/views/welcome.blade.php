@@ -54,7 +54,8 @@
         <div class="col-md-6 left-img text-center">
           <div>
             <img src="https://cdn-icons-png.flaticon.com/512/1995/1995526.png" alt="Monitoring" class="img-fluid" style="max-height: 400px;">
-          </div>
+            <a href="/account/login">Зарегистрироваться</a>
+        </div>
         </div>
 
         <!-- Right content box -->
