@@ -6,6 +6,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Pages\Auth\EditProfile as BaseEditProfile;
 use Filament\Forms\Components\Select;
+use Filament\Actions\Action;
 
 class EditProfile extends BaseEditProfile
 {
@@ -43,5 +44,18 @@ class EditProfile extends BaseEditProfile
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent()
             ]);
+    }
+
+     protected function getFormActions(): array
+    {
+        return [
+            Action::make('save')
+                ->label('Сохранить')
+                ->submit('save'),
+
+            Action::make('cancel')
+                ->label('Назад')
+                ->url('/account'),
+        ];
     }
 }
