@@ -16,7 +16,10 @@ class ListTasks extends ListRecords
             Actions\CreateAction::make(),
             Actions\CreateAction::make('create_as_sample')
             ->label('Создать шаблон ')
-            ->url('/account/tasks/create?sample=true')
+            ->url('/account/tasks/create?sample=true'),
+            Actions\CreateAction::make('massAdditionOfNewTasks')
+            ->label('Массовое добавление новых заданий ')
+            ->url('/account/tasks/mass-add/create')
         ];
     }
 }

@@ -1066,6 +1066,7 @@ class TaskResource extends Resource
             'index' => Pages\ListTasks::route('/'),
             'create' => Pages\CreateTask::route('/create'),
             'edit' => Pages\EditTask::route('/{record}/edit'),
+            'mass-add' => Pages\MassAddTasks::route('/mass-add/create'),
         ];
     }
 }
