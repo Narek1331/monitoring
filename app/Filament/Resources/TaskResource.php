@@ -303,7 +303,17 @@ class TaskResource extends Resource
             ->label('Название задания')
             ->required()
             ->columnSpan(1)
-            ->helperText('Это название вы будете видеть в списке всех заданий, а также получать в уведомлениях об ошибках.');
+            ->helperText('Это название вы будете видеть в списке всех заданий, а также получать в уведомлениях об ошибках.')
+            ->reactive();
+            // ->afterStateHydrated(function ($set,$get,$livewire,$state) {
+            //     $protocol = $get('protocol') ?? 'http://';
+            //     $address_ip = $get('address_ip') ?? 'helloworld.com';
+            //     $fullUrl = $protocol . $address_ip;
+
+            //     $set('name',$fullUrl);
+            //     $state = $fullUrl;
+
+            // });
 
         $form[] = Grid::make(3)
             ->schema([
@@ -316,13 +326,48 @@ class TaskResource extends Resource
                         'https://' => 'https://',
                         'ip:' => 'ip:',
                     ])
+                    ->reactive()
                     ->disablePlaceholderSelection(true)
-                    ->default('http://'),
+                    ->default('http://')
+                    ->afterStateUpdated(function ($set,$get,$livewire,$state) {
+                        $protocol = $get('protocol') ?? 'http://';
+                        $address_ip = $get('address_ip') ?? 'helloworld.com';
+                        $verificationMethodId = $get('verification_method_id');
+
+                        if($verificationMethodId)
+                        {
+                            $verificationMethod = VerificationMethod::find($verificationMethodId);
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+
+                            $set('name',$fullName);
+                            $state = $fullName;
+                        }
+
+
+                    }),
 
                 TextInput::make('address_ip')
                     ->label('Адрес сайта или IP сервера')
                     ->required()
+                    ->reactive()
                     ->columnSpan(2)
+                    ->afterStateUpdated(function ($set,$get,$livewire,$state) {
+                        $protocol = $get('protocol') ?? 'http://';
+                        $address_ip = $get('address_ip') ?? 'helloworld.com';
+                        $verificationMethodId = $get('verification_method_id');
+
+                        if($verificationMethodId)
+                        {
+                            $verificationMethod = VerificationMethod::find($verificationMethodId);
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+
+                            $set('name',$fullName);
+                            $state = $fullName;
+                        }
+
+
+                    }),
+
             ]);
 
         $form[] = TextInput::make('port')
@@ -354,7 +399,8 @@ class TaskResource extends Resource
             ->label('Название задания')
             ->required()
             ->columnSpan(1)
-            ->helperText('Это название вы будете видеть в списке всех заданий, а также получать в уведомлениях об ошибках.');
+            ->helperText('Это название вы будете видеть в списке всех заданий, а также получать в уведомлениях об ошибках.')
+            ->reactive();
 
         $form[] = Grid::make(3)
             ->schema([
@@ -368,12 +414,46 @@ class TaskResource extends Resource
                         'ip:' => 'ip:',
                     ])
                     ->disablePlaceholderSelection(true)
-                    ->default('http://'),
+                    ->default('http://')
+                    ->reactive()
+                    ->afterStateUpdated(function ($set,$get,$livewire,$state) {
+                        $protocol = $get('protocol') ?? 'http://';
+                        $address_ip = $get('address_ip') ?? 'helloworld.com';
+                        $verificationMethodId = $get('verification_method_id');
+
+                        if($verificationMethodId)
+                        {
+                            $verificationMethod = VerificationMethod::find($verificationMethodId);
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+
+                            $set('name',$fullName);
+                            $state = $fullName;
+                        }
+
+
+                    }),
 
                 TextInput::make('address_ip')
                     ->label('Адрес сайта или IP сервера')
                     ->required()
                     ->columnSpan(2)
+                    ->reactive()
+                    ->afterStateUpdated(function ($set,$get,$livewire,$state) {
+                        $protocol = $get('protocol') ?? 'http://';
+                        $address_ip = $get('address_ip') ?? 'helloworld.com';
+                        $verificationMethodId = $get('verification_method_id');
+
+                        if($verificationMethodId)
+                        {
+                            $verificationMethod = VerificationMethod::find($verificationMethodId);
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+
+                            $set('name',$fullName);
+                            $state = $fullName;
+                        }
+
+
+                    }),
             ]);
 
         $form[] = TextInput::make('port')
@@ -393,7 +473,8 @@ class TaskResource extends Resource
             ->label('Название задания')
             ->required()
             ->columnSpan(1)
-            ->helperText('Это название вы будете видеть в списке всех заданий, а также получать в уведомлениях об ошибках.');
+            ->helperText('Это название вы будете видеть в списке всех заданий, а также получать в уведомлениях об ошибках.')
+            ->reactive();
 
         $form[] = Grid::make(3)
             ->schema([
@@ -407,12 +488,46 @@ class TaskResource extends Resource
                         'ip:' => 'ip:',
                     ])
                     ->disablePlaceholderSelection(true)
-                    ->default('http://'),
+                    ->default('http://')
+                    ->reactive()
+                    ->afterStateUpdated(function ($set,$get,$livewire,$state) {
+                        $protocol = $get('protocol') ?? 'http://';
+                        $address_ip = $get('address_ip') ?? 'helloworld.com';
+                        $verificationMethodId = $get('verification_method_id');
+
+                        if($verificationMethodId)
+                        {
+                            $verificationMethod = VerificationMethod::find($verificationMethodId);
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+
+                            $set('name',$fullName);
+                            $state = $fullName;
+                        }
+
+
+                    }),
 
                 TextInput::make('address_ip')
                     ->label('Адрес сайта или IP сервера')
                     ->required()
                     ->columnSpan(2)
+                    ->reactive()
+                    ->afterStateUpdated(function ($set,$get,$livewire,$state) {
+                        $protocol = $get('protocol') ?? 'http://';
+                        $address_ip = $get('address_ip') ?? 'helloworld.com';
+                        $verificationMethodId = $get('verification_method_id');
+
+                        if($verificationMethodId)
+                        {
+                            $verificationMethod = VerificationMethod::find($verificationMethodId);
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+
+                            $set('name',$fullName);
+                            $state = $fullName;
+                        }
+
+
+                    }),
             ]);
         $form[] = Toggle::make('control_domain')
             ->label('Контролировать домен')
@@ -432,7 +547,8 @@ class TaskResource extends Resource
             ->label('Название задания')
             ->required()
             ->columnSpan(1)
-            ->helperText('Это название вы будете видеть в списке всех заданий, а также получать в уведомлениях об ошибках.');
+            ->helperText('Это название вы будете видеть в списке всех заданий, а также получать в уведомлениях об ошибках.')
+            ->reactive();
 
         $form[] = Grid::make(3)
             ->schema([
@@ -446,12 +562,46 @@ class TaskResource extends Resource
                         'ip:' => 'ip:',
                     ])
                     ->disablePlaceholderSelection(true)
-                    ->default('http://'),
+                    ->default('http://')
+                    ->reactive()
+                    ->afterStateUpdated(function ($set,$get,$livewire,$state) {
+                        $protocol = $get('protocol') ?? 'http://';
+                        $address_ip = $get('address_ip') ?? 'helloworld.com';
+                        $verificationMethodId = $get('verification_method_id');
+
+                        if($verificationMethodId)
+                        {
+                            $verificationMethod = VerificationMethod::find($verificationMethodId);
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+
+                            $set('name',$fullName);
+                            $state = $fullName;
+                        }
+
+
+                    }),
 
                 TextInput::make('address_ip')
                     ->label('Адрес сайта или IP сервера')
                     ->required()
                     ->columnSpan(2)
+                    ->reactive()
+                    ->afterStateUpdated(function ($set,$get,$livewire,$state) {
+                        $protocol = $get('protocol') ?? 'http://';
+                        $address_ip = $get('address_ip') ?? 'helloworld.com';
+                        $verificationMethodId = $get('verification_method_id');
+
+                        if($verificationMethodId)
+                        {
+                            $verificationMethod = VerificationMethod::find($verificationMethodId);
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+
+                            $set('name',$fullName);
+                            $state = $fullName;
+                        }
+
+
+                    }),
             ]);
 
         $form[] = TextInput::make('port')
