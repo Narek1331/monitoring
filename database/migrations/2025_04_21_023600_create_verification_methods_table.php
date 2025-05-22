@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('verification_methods', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('short_title')->nullable();
             $table->string('slug')->nullable();
             $table->text('description');
             $table->integer('order_by')->default(0);

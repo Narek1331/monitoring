@@ -14,6 +14,7 @@ class VerificationMethod extends Model
      */
     protected $fillable = [
         'title',
+        'short_title',
         'description',
         'order_by',
         'slug',
@@ -25,3 +26,4 @@ class VerificationMethod extends Model
         static::bootSlugifyTrait();
     }
 }
+

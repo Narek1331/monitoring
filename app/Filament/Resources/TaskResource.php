@@ -306,7 +306,7 @@ class TaskResource extends Resource
             ->helperText('Это название вы будете видеть в списке всех заданий, а также получать в уведомлениях об ошибках.')
             ->reactive();
             // ->afterStateHydrated(function ($set,$get,$livewire,$state) {
-            //     $protocol = $get('protocol') ?? 'http://';
+            //     $protocol = '';
             //     $address_ip = $get('address_ip') ?? 'helloworld.com';
             //     $fullUrl = $protocol . $address_ip;
 
@@ -330,14 +330,14 @@ class TaskResource extends Resource
                     ->disablePlaceholderSelection(true)
                     ->default('http://')
                     ->afterStateUpdated(function ($set,$get,$livewire,$state) {
-                        $protocol = $get('protocol') ?? 'http://';
+                        $protocol = '';
                         $address_ip = $get('address_ip') ?? 'helloworld.com';
                         $verificationMethodId = $get('verification_method_id');
 
                         if($verificationMethodId)
                         {
                             $verificationMethod = VerificationMethod::find($verificationMethodId);
-                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->short_title;
 
                             $set('name',$fullName);
                             $state = $fullName;
@@ -352,14 +352,14 @@ class TaskResource extends Resource
                     ->reactive()
                     ->columnSpan(2)
                     ->afterStateUpdated(function ($set,$get,$livewire,$state) {
-                        $protocol = $get('protocol') ?? 'http://';
+                        $protocol = '';
                         $address_ip = $get('address_ip') ?? 'helloworld.com';
                         $verificationMethodId = $get('verification_method_id');
 
                         if($verificationMethodId)
                         {
                             $verificationMethod = VerificationMethod::find($verificationMethodId);
-                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->short_title;
 
                             $set('name',$fullName);
                             $state = $fullName;
@@ -417,14 +417,14 @@ class TaskResource extends Resource
                     ->default('http://')
                     ->reactive()
                     ->afterStateUpdated(function ($set,$get,$livewire,$state) {
-                        $protocol = $get('protocol') ?? 'http://';
+                        $protocol = '';
                         $address_ip = $get('address_ip') ?? 'helloworld.com';
                         $verificationMethodId = $get('verification_method_id');
 
                         if($verificationMethodId)
                         {
                             $verificationMethod = VerificationMethod::find($verificationMethodId);
-                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->short_title;
 
                             $set('name',$fullName);
                             $state = $fullName;
@@ -439,14 +439,14 @@ class TaskResource extends Resource
                     ->columnSpan(2)
                     ->reactive()
                     ->afterStateUpdated(function ($set,$get,$livewire,$state) {
-                        $protocol = $get('protocol') ?? 'http://';
+                        $protocol = '';
                         $address_ip = $get('address_ip') ?? 'helloworld.com';
                         $verificationMethodId = $get('verification_method_id');
 
                         if($verificationMethodId)
                         {
                             $verificationMethod = VerificationMethod::find($verificationMethodId);
-                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->short_title;
 
                             $set('name',$fullName);
                             $state = $fullName;
@@ -491,14 +491,14 @@ class TaskResource extends Resource
                     ->default('http://')
                     ->reactive()
                     ->afterStateUpdated(function ($set,$get,$livewire,$state) {
-                        $protocol = $get('protocol') ?? 'http://';
+                        $protocol = '';
                         $address_ip = $get('address_ip') ?? 'helloworld.com';
                         $verificationMethodId = $get('verification_method_id');
 
                         if($verificationMethodId)
                         {
                             $verificationMethod = VerificationMethod::find($verificationMethodId);
-                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->short_title;
 
                             $set('name',$fullName);
                             $state = $fullName;
@@ -513,14 +513,14 @@ class TaskResource extends Resource
                     ->columnSpan(2)
                     ->reactive()
                     ->afterStateUpdated(function ($set,$get,$livewire,$state) {
-                        $protocol = $get('protocol') ?? 'http://';
+                        $protocol = '';
                         $address_ip = $get('address_ip') ?? 'helloworld.com';
                         $verificationMethodId = $get('verification_method_id');
 
                         if($verificationMethodId)
                         {
                             $verificationMethod = VerificationMethod::find($verificationMethodId);
-                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->short_title;
 
                             $set('name',$fullName);
                             $state = $fullName;
@@ -565,14 +565,14 @@ class TaskResource extends Resource
                     ->default('http://')
                     ->reactive()
                     ->afterStateUpdated(function ($set,$get,$livewire,$state) {
-                        $protocol = $get('protocol') ?? 'http://';
+                        $protocol = '';
                         $address_ip = $get('address_ip') ?? 'helloworld.com';
                         $verificationMethodId = $get('verification_method_id');
 
                         if($verificationMethodId)
                         {
                             $verificationMethod = VerificationMethod::find($verificationMethodId);
-                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->short_title;
 
                             $set('name',$fullName);
                             $state = $fullName;
@@ -587,14 +587,14 @@ class TaskResource extends Resource
                     ->columnSpan(2)
                     ->reactive()
                     ->afterStateUpdated(function ($set,$get,$livewire,$state) {
-                        $protocol = $get('protocol') ?? 'http://';
+                        $protocol = '';
                         $address_ip = $get('address_ip') ?? 'helloworld.com';
                         $verificationMethodId = $get('verification_method_id');
 
                         if($verificationMethodId)
                         {
                             $verificationMethod = VerificationMethod::find($verificationMethodId);
-                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->title;
+                            $fullName = $protocol . $address_ip . ' ' . $verificationMethod->short_title;
 
                             $set('name',$fullName);
                             $state = $fullName;

@@ -53,13 +53,19 @@ class MassAddTasks extends Page implements Forms\Contracts\HasForms{
         {
             foreach($urlDatas as $data)
             {
-                if (filter_var($data, FILTER_VALIDATE_URL)) {
-                    $parts = parse_url($data);
+                if ($parts = parse_url($data)) {
+
 
                     $task = Task::find($taskId);
                     $newTask = $task->replicate();
-                    $newTask->protocol = $parts['scheme'] ? $parts['scheme'] . '://' : 'http://';
+                    $newTask->protocol = isset($parts['scheme']) ? $parts['scheme'] . '://' : 'http://';
                     $newTask->address_ip = $parts['host'] ?? '';
+
+                    if(isset($parts['path']))
+                    {
+                        $newTask->address_ip = $parts['path'];
+                    }
+
                     $newTask->sample = false;
                     $newTask->save();
                 }
