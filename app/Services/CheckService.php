@@ -52,8 +52,86 @@ class CheckService
             }else if($task->verificationMethod->slug == 'monitoring_naliciia_ssylok_i_html_koda')
             {
                 $this->monitoringNaliciiaSsylokIHtmlKoda($task);
+            }else if($task->verificationMethod->slug == 'prostaia_proverka_dostupnosti_saita_ili_servera_metod_head')
+            {
+                $this->prostaiaProverkaDostupnostiSaitaIliServeraMetodHead($task);
+            }else if($task->verificationMethod->slug == 'proverka_dostupnosti_saita_s_otpravkoi_dannyx_formy_metod_post')
+            {
+                $this->proverkaDostupnostiSaitaSOtpravkoiDannyxFormyMetodPost($task);
+            }else if($task->verificationMethod->slug == 'proverka_vnutrennix_resursov_servera_mesto_na_diske_zagruzka_uptime_i_dr')
+            {
+                $this->proverkaVnutrennixResursovServeraMestoNaDiskeZagruzkaUptimeIDr($task);
+            }else if($task->verificationMethod->slug == 'proverka_dostupnosti_ftp_servera')
+            {
+                $this->proverkaDostupnostiFtpServera($task);
             }
         }
+    }
+
+    private function proverkaDostupnostiFtpServera($task)
+    {
+        // if(!$task->status)
+        // {
+        //     return;
+        // }
+
+        // if(!$task->last_check_date)
+        // {
+        //     $task->last_check_date = now();
+        //     $task->save();
+        // }
+
+        // $givenTime = Carbon::parse($task['last_check_date']);
+        // $currentTime = Carbon::now();
+
+        // if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
+        //     $task->last_check_date = now();
+        //     $task->save();
+        // }else{
+        //     return;
+        // }
+
+        $addressIp = $task['address_ip'];
+        $port = $task['port'];
+        $login = $task['login'];
+        $password = $task['password'];
+
+        $checkFtpConnection = $this->checkFtpConnection($addressIp,$port, $login,$password);
+
+        if(!$checkFtpConnection)
+        {
+            $task->messages()->create([
+                    'status' => false,
+                    'text' => 'Не удалось подключиться к FTP-серверу. ' . $addressIp,
+                    'status_code' => 500
+                ]);
+        }
+
+    }
+
+    private function checkFtpConnection($addressIp, $port, $login, $password)
+    {
+        // Set a timeout for the connection (in seconds)
+        $timeout = 10;
+
+        // Try to connect to the FTP server
+        $ftpConnection = ftp_connect($addressIp, $port, $timeout);
+
+        if (!$ftpConnection) {
+            return false;
+        }
+
+        // Try to log in with the provided credentials
+        $loginResult = @ftp_login($ftpConnection, $login, $password);
+
+        // Close the connection
+        ftp_close($ftpConnection);
+
+        if (!$loginResult) {
+            return false;
+        }
+
+        return true;
     }
 
     private function proverkaDostupnostiSaitaSPoiskomSlovaNaStraniceMetodGet($task)
@@ -179,6 +257,232 @@ class CheckService
 
     }
 
+    private function proverkaDostupnostiSaitaSOtpravkoiDannyxFormyMetodPost($task)
+    {
+        if(!$task->last_check_date)
+        {
+            $task->last_check_date = now();
+            $task->save();
+        }
+
+        $givenTime = Carbon::parse($task['last_check_date']);
+        $currentTime = Carbon::now();
+
+        if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
+            $task->last_check_date = now();
+            $task->save();
+        }else{
+            return;
+        }
+
+        $url = $task['protocol'] . $task['address_ip'];
+        $errorMessage = $task->error_message;
+        $notifyOnRecovery = $task->notify_on_recovery;
+        $taskName = $task->name;
+
+        if($port = $task['port'])
+        {
+            $url .= ":$port";
+        }
+
+        $httpData = $this->httpService->makeSimplePostRequest($url,$task);
+
+        $httpStatusCode = $httpData['status'] ?? 500;
+        $lastMessage = $task->messages->last();
+
+        if(!$httpData)
+        {
+            $textMessage = $errorMessage ?? "$taskName : Ошибка сервера";
+            if(!isset($lastMessage->text))
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => 500
+                ]);
+            }
+            else if($lastMessage->text != $textMessage)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => 500
+                ]);
+            }
+
+            return;
+        }
+
+        if($notifyOnRecovery)
+        {
+            if(!$lastMessage->status)
+            {
+                $task->messages()->create([
+                    'status' => true,
+                    'text' => "$taskName : Сервер полностью восстановлен",
+                    'status_code' => $httpStatusCode
+                ]);
+            }
+        }
+
+
+        $searchTextInResponse = $task->search_text_in_response;
+        $textPresenceErrorCheck = $task->text_presence_error_check;
+        $validResponseCode = $task->valid_response_code;
+        $ignoredErrorCodes = $task->ignored_error_codes;
+        $alertOnSpecificCodes = $task->alert_on_specific_codes;
+
+        if ($searchTextInResponse && strpos($httpData['html'], $searchTextInResponse) == false) {
+            $textMessage = $errorMessage ?? "$taskName : Запрашиваемый текст отсутствует";
+            if($lastMessage->text != $textMessage)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => $httpStatusCode
+                ]);
+            }
+
+            return;
+
+        }
+
+        if ($textPresenceErrorCheck && strpos($httpData['html'], $textPresenceErrorCheck) !== false) {
+            $textMessage = $errorMessage ?? "$taskName :Ошибка: текст обнаружен";
+            if($lastMessage->text != $textMessage)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => $httpStatusCode
+                ]);
+            }
+            return;
+        }
+
+        if($httpStatusCode != $validResponseCode && $httpStatusCode != $ignoredErrorCodes && $httpStatusCode == $alertOnSpecificCodes)
+        {
+            $textMessage = $errorMessage ?? "$taskName : Обнаружен ошибочный статус-код в ответе сервера";
+            if($lastMessage->text != $textMessage)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => $httpStatusCode
+                ]);
+            }
+            return;
+        }
+
+
+        if($task->control_domain)
+        {
+            $this->checkDomainPaidTill($task);
+        }
+
+        if($task->site_virus_check)
+        {
+            $this->checkSiteVirus($url);
+        }
+
+
+    }
+
+    private function prostaiaProverkaDostupnostiSaitaIliServeraMetodHead($task)
+    {
+        if(!$task->last_check_date)
+        {
+            $task->last_check_date = now();
+            $task->save();
+        }
+
+        $givenTime = Carbon::parse($task['last_check_date']);
+        $currentTime = Carbon::now();
+
+        if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
+            $task->last_check_date = now();
+            $task->save();
+        }else{
+            return;
+        }
+
+        $url = $task['protocol'] . $task['address_ip'];
+        $errorMessage = $task->error_message;
+        $notifyOnRecovery = $task->notify_on_recovery;
+        $taskName = $task->name;
+
+        if($port = $task['port'])
+        {
+            $url .= ":$port";
+        }
+
+        $httpData = $this->httpService->makeSimpleRequest($url,$task);
+
+        $httpStatusCode = $httpData['status'] ?? 500;
+        $lastMessage = $task->messages->last();
+
+        if(!$httpData)
+        {
+            $textMessage = $errorMessage ?? "$taskName : Ошибка сервера";
+            if($lastMessage->text != $textMessage)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => 500
+                ]);
+            }
+
+            return;
+        }
+
+        if($notifyOnRecovery)
+        {
+            if(!$lastMessage->status)
+            {
+                $task->messages()->create([
+                    'status' => true,
+                    'text' => "$taskName : Сервер полностью восстановлен",
+                    'status_code' => $httpStatusCode
+                ]);
+            }
+        }
+
+
+        $searchTextInResponse = $task->search_text_in_response;
+        $textPresenceErrorCheck = $task->text_presence_error_check;
+        $validResponseCode = $task->valid_response_code;
+        $ignoredErrorCodes = $task->ignored_error_codes;
+        $alertOnSpecificCodes = $task->alert_on_specific_codes;
+
+        if($httpStatusCode != $validResponseCode && $httpStatusCode != $ignoredErrorCodes && $httpStatusCode == $alertOnSpecificCodes)
+        {
+            $textMessage = $errorMessage ?? "$taskName : Обнаружен ошибочный статус-код в ответе сервера";
+            if($lastMessage->text != $textMessage)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => $httpStatusCode
+                ]);
+            }
+            return;
+        }
+
+
+        if($task->control_domain)
+        {
+            $this->checkDomainPaidTill($task);
+        }
+
+        if($task->site_virus_check)
+        {
+            $this->checkSiteVirus($url);
+        }
+
+
+    }
+
     private function kontrolIzmeneniiFailovNaServere($task)
     {
         if(!$task->status)
@@ -263,6 +567,49 @@ class CheckService
                     }
                 }
             }
+
+        }
+
+    }
+
+    private function proverkaVnutrennixResursovServeraMestoNaDiskeZagruzkaUptimeIDr($task)
+    {
+        if(!$task->status)
+        {
+            return;
+        }
+
+        if(!$task->last_check_date)
+        {
+            $task->last_check_date = now();
+            $task->save();
+        }
+
+        $givenTime = Carbon::parse($task['last_check_date']);
+        $currentTime = Carbon::now();
+
+        if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
+            $task->last_check_date = now();
+            $task->save();
+        }else{
+            return;
+        }
+
+        $url = $task['protocol'] . $task['address_ip'];
+
+        if($port = $task['port'])
+        {
+            $url .= ":$port";
+        }
+
+        $data = $this->httpService->makeHttpCheckResourcesRequest($url);
+
+        if($data && $formatSystemStatusInRussian = $this->formatSystemStatusInRussian($data))
+        {
+            $task->messages()->create([
+                'status' => false,
+                'text' => $formatSystemStatusInRussian,
+            ]);
 
         }
 
@@ -527,6 +874,48 @@ class CheckService
 
         }
     }
+
+    private function formatSystemStatusInRussian(array $data): string {
+        $diskTotal = number_format($data['disk']['total_MB'], 2, ',', ' ');
+        $diskUsed = number_format($data['disk']['used_MB'], 2, ',', ' ');
+        $diskFree = number_format($data['disk']['free_MB'], 2, ',', ' ');
+        $diskUsage = $data['disk']['usage_percent'];
+
+        $cpuLoad1 = number_format($data['cpu']['load_1min'], 2, ',', ' ');
+        $cpuLoad5 = number_format($data['cpu']['load_5min'], 2, ',', ' ');
+        $cpuLoad15 = number_format($data['cpu']['load_15min'], 2, ',', ' ');
+
+        $uptime = $data['uptime_formatted'];
+
+        $memTotal = number_format($data['memory']['total_MB'], 2, ',', ' ');
+        $memAvailable = number_format($data['memory']['available_MB'], 2, ',', ' ');
+        $memUsage = $data['memory']['usage_percent'];
+
+        $phpVersion = $data['php_version'];
+        $os = $data['os'];
+
+        return "Состояние системы:
+    - Операционная система: {$os}
+    - Время работы системы: {$uptime}
+    - Версия PHP: {$phpVersion}
+
+    Память:
+    - Всего: {$memTotal} МБ
+    - Доступно: {$memAvailable} МБ
+    - Использовано: {$memUsage}%
+
+    Диск:
+    - Всего: {$diskTotal} МБ
+    - Использовано: {$diskUsed} МБ
+    - Свободно: {$diskFree} МБ
+    - Загрузка диска: {$diskUsage}%
+
+    Нагрузка на CPU:
+    - За 1 мин.: {$cpuLoad1}
+    - За 5 мин.: {$cpuLoad5}
+    - За 15 мин.: {$cpuLoad15}";
+    }
+
 
 
 }

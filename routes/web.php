@@ -44,6 +44,14 @@ Route::get('/download/code', function(){
     return abort(404, 'File not found');
 })->name('download.code');
 
+Route::get('/download/check-resources', function(){
+    $filePath = public_path('check-resources.php');
+    if (file_exists($filePath)) {
+        return response()->download($filePath, 'check-resources.php');
+    }
+    return abort(404, 'File not found');
+})->name('download.check-resources');
+
 Route::get('/telegram', function () {
     $botToken = env('TELEGRAM_BOT_TOKEN');
         $webhookUrl = 'https://iqm-tools.ru/webhook/telegram';

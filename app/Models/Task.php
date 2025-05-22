@@ -50,7 +50,8 @@ class Task extends Model
         'last_check_date',
         'token',
         'ignored_directories',
-        'sample'
+        'sample',
+        'form_fields'
     ];
 
     protected $casts = [

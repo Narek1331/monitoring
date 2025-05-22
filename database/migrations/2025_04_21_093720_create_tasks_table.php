@@ -56,6 +56,7 @@ return new class extends Migration
             $table->dateTime('last_check_date')->nullable();
             $table->string('token')->nullable();
             $table->string('ignored_directories')->nullable();
+            $table->text('form_fields')->nullable();
 
             $table->boolean('sample')->nullable()->default(false);
 
