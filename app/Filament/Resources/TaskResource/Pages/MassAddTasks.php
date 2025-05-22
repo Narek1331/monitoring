@@ -66,8 +66,28 @@ class MassAddTasks extends Page implements Forms\Contracts\HasForms{
                         $newTask->address_ip = $parts['path'];
                     }
 
+                    $newTask->name = $newTask->address_ip . ' ' . $task->verificationMethod->short_title;
                     $newTask->sample = false;
                     $newTask->save();
+
+                    foreach($task->reportContacts as $reportContact)
+                    {
+                        $newTask->reportContacts()->attach($reportContact->id);
+
+                    }
+
+                    foreach($task->errorNotificationContacts as $errorNotificationContact)
+                    {
+                        $newTask->errorNotificationContacts()->attach($errorNotificationContact->id);
+
+                    }
+
+                    foreach($task->reportFrequencies as $reportFrequency)
+                    {
+                        $newTask->reportFrequencies()->attach($reportFrequency->id);
+
+                    }
+
                 }
             }
 
