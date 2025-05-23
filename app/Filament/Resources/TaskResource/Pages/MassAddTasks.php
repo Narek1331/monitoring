@@ -58,7 +58,7 @@ class MassAddTasks extends Page implements Forms\Contracts\HasForms{
 
                     $task = Task::find($taskId);
                     $newTask = $task->replicate();
-                    $newTask->protocol = isset($parts['scheme']) ? $parts['scheme'] . '://' : 'http://';
+                    $newTask->protocol = isset($parts['scheme']) ? $parts['scheme'] . '://' : 'https://';
                     $newTask->address_ip = $parts['host'] ?? '';
 
                     if(isset($parts['path']))
