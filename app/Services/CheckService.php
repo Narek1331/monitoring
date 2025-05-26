@@ -170,7 +170,15 @@ class CheckService
         if(!$httpData)
         {
             $textMessage = $errorMessage ?? "$taskName : Ошибка сервера";
-            if($lastMessage->text != $textMessage)
+            if(!$lastMessage)
+            {
+                 $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => 500
+                ]);
+            }
+            else if($lastMessage->text != $textMessage)
             {
                 $task->messages()->create([
                     'status' => false,
