@@ -211,7 +211,15 @@ class CheckService
 
         if ($searchTextInResponse && strpos($httpData['html'], $searchTextInResponse) == false) {
             $textMessage = $errorMessage ?? "$taskName : Запрашиваемый текст отсутствует";
-            if($lastMessage->text != $textMessage)
+            if(!$lastMessage)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => $httpStatusCode
+                ]);
+            }
+            else if($lastMessage->text != $textMessage)
             {
                 $task->messages()->create([
                     'status' => false,
@@ -226,7 +234,15 @@ class CheckService
 
         if ($textPresenceErrorCheck && strpos($httpData['html'], $textPresenceErrorCheck) !== false) {
             $textMessage = $errorMessage ?? "$taskName :Ошибка: текст обнаружен";
-            if($lastMessage->text != $textMessage)
+            if(!$lastMessage)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => $httpStatusCode
+                ]);
+            }
+            else if($lastMessage->text != $textMessage)
             {
                 $task->messages()->create([
                     'status' => false,
@@ -240,7 +256,15 @@ class CheckService
         if($httpStatusCode != $validResponseCode && $httpStatusCode != $ignoredErrorCodes && $httpStatusCode == $alertOnSpecificCodes)
         {
             $textMessage = $errorMessage ?? "$taskName : Обнаружен ошибочный статус-код в ответе сервера";
-            if($lastMessage->text != $textMessage)
+            if(!$lastMessage->text)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => $httpStatusCode
+                ]);
+            }
+            else if($lastMessage->text != $textMessage)
             {
                 $task->messages()->create([
                     'status' => false,
@@ -342,7 +366,15 @@ class CheckService
 
         if ($searchTextInResponse && strpos($httpData['html'], $searchTextInResponse) == false) {
             $textMessage = $errorMessage ?? "$taskName : Запрашиваемый текст отсутствует";
-            if($lastMessage->text != $textMessage)
+            if(!$lastMessage)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => $httpStatusCode
+                ]);
+            }
+            else if($lastMessage->text != $textMessage)
             {
                 $task->messages()->create([
                     'status' => false,
@@ -357,7 +389,15 @@ class CheckService
 
         if ($textPresenceErrorCheck && strpos($httpData['html'], $textPresenceErrorCheck) !== false) {
             $textMessage = $errorMessage ?? "$taskName :Ошибка: текст обнаружен";
-            if($lastMessage->text != $textMessage)
+            if(!$lastMessage)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => $httpStatusCode
+                ]);
+            }
+            else if($lastMessage->text != $textMessage)
             {
                 $task->messages()->create([
                     'status' => false,
@@ -371,7 +411,15 @@ class CheckService
         if($httpStatusCode != $validResponseCode && $httpStatusCode != $ignoredErrorCodes && $httpStatusCode == $alertOnSpecificCodes)
         {
             $textMessage = $errorMessage ?? "$taskName : Обнаружен ошибочный статус-код в ответе сервера";
-            if($lastMessage->text != $textMessage)
+            if(!$lastMessage)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => $httpStatusCode
+                ]);
+            }
+            else if($lastMessage->text != $textMessage)
             {
                 $task->messages()->create([
                     'status' => false,
@@ -432,7 +480,15 @@ class CheckService
         if(!$httpData)
         {
             $textMessage = $errorMessage ?? "$taskName : Ошибка сервера";
-            if($lastMessage->text != $textMessage)
+            if(!$lastMessage)
+            {
+                 $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => 500
+                ]);
+            }
+            else if($lastMessage->text != $textMessage)
             {
                 $task->messages()->create([
                     'status' => false,
@@ -466,7 +522,15 @@ class CheckService
         if($httpStatusCode != $validResponseCode && $httpStatusCode != $ignoredErrorCodes && $httpStatusCode == $alertOnSpecificCodes)
         {
             $textMessage = $errorMessage ?? "$taskName : Обнаружен ошибочный статус-код в ответе сервера";
-            if($lastMessage->text != $textMessage)
+            if(!$lastMessage)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => $httpStatusCode
+                ]);
+            }
+            else if($lastMessage->text != $textMessage)
             {
                 $task->messages()->create([
                     'status' => false,
