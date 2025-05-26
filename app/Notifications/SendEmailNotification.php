@@ -71,7 +71,8 @@ class SendEmailNotification extends Notification implements ShouldQueue
 
         return (new MailMessage)
                     ->subject("Сообщение от $appName")
-                    ->line($this->message);
+                    ->view('emails.backup-notification', ['data' => $this->message]);
+                    // ->line($this->message);
     }
 
     /**
