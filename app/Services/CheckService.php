@@ -205,9 +205,9 @@ class CheckService
 
         $searchTextInResponse = $task->search_text_in_response;
         $textPresenceErrorCheck = $task->text_presence_error_check;
-        $validResponseCode = $task->valid_response_code;
-        $ignoredErrorCodes = $task->ignored_error_codes;
-        $alertOnSpecificCodes = $task->alert_on_specific_codes;
+        $validResponseCode = $task->valid_response_code ?? 200;
+        $ignoredErrorCodes = $task->ignored_error_codes ?? 404;
+        $alertOnSpecificCodes = $task->alert_on_specific_codes ?? 500;
 
         if ($searchTextInResponse && strpos($httpData['html'], $searchTextInResponse) == false) {
             $textMessage = $errorMessage ?? "$taskName : Запрашиваемый текст отсутствует";
