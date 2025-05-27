@@ -1,7 +1,5 @@
-<div wire:snapshot="{&quot;data&quot;:[],&quot;memo&quot;:{&quot;id&quot;:&quot;JdgMkUX73bEfaLae7uKp&quot;,&quot;name&quot;:&quot;filament.widgets.account-widget&quot;,&quot;path&quot;:&quot;account&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;ru&quot;},&quot;checksum&quot;:&quot;3d9cd32cf92fc37998257994ab167cda46b3ea90c699d5660e2b41c94e31509c&quot;}" wire:effects="[]" wire:id="JdgMkUX73bEfaLae7uKp" style="--col-span-default: span 1 / span 1;" class="col-[--col-span-default] fi-wi-widget fi-account-widget">
-    <section x-data="{
-        isCollapsed:  false ,
-    }" class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
+<div class="" >
+    <section style="height: 148px!important" class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
 
     <div class="fi-section-content-ctn">
         <div class="fi-section-content p-6">
@@ -49,7 +47,7 @@
             </button>
             </form>
 
-        
+
         </div>
         </div>
 

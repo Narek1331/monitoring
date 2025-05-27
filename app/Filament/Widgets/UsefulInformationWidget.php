@@ -14,8 +14,8 @@ class UsefulInformationWidget extends Widget
         return view('filament.widgets.useful-information-widget');
     }
 
-    // protected int | string | array $columnSpan = '6';
+    // protected int | string | array $columnSpan = 'full';
 
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 1;
 
 }
