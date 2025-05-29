@@ -14,11 +14,13 @@
             <tbody>
 
                  @foreach ($messages as $message)
-                    <tr class="border-b">
-                        <td class="px-4 py-2">{{ $message->created_at->format('Y-m-d H:i') }}</td>
-                        <td class="px-4 py-2">{{ $message->text }}</td>
-                        <td class="px-4 py-2">{{ $message->task->name }}</td>
-                    </tr>
+                    @if ($message)
+                        <tr class="border-b">
+                            <td class="px-4 py-2">{{ $message->created_at->format('Y-m-d H:i') }}</td>
+                            <td class="px-4 py-2">{{ $message->text }}</td>
+                            <td class="px-4 py-2">{{ $message->task->name }}</td>
+                        </tr>
+                    @endif
                 @endforeach
 
             </tbody>

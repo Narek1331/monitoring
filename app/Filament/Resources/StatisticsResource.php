@@ -159,7 +159,9 @@ class StatisticsResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListStatistics::route('/')
+            'index' => Pages\ListStatistics::route('/'),
+            'view' => Pages\ViewStatistics::route('/{record}/view'),
+
         ];
     }
 }
