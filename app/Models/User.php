@@ -51,4 +51,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Contact::class,'user_id','id');
     }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function hasPermission(string $slug): bool
+    {
+        return $this->role?->permissions()->where('slug', $slug)->exists() ?? false;
+    }
+
 }

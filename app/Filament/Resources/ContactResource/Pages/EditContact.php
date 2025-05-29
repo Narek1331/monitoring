@@ -26,4 +26,9 @@ class EditContact extends EditRecord
     {
         return static::getResource()::getUrl('index');
     }
+
+    public static function canAccess(array $parameters = []): bool
+    {
+         return auth()->user()->hasPermission('edit_contact');
+    }
 }

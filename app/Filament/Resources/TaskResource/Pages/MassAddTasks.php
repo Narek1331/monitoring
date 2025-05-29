@@ -41,6 +41,11 @@ class MassAddTasks extends Page implements Forms\Contracts\HasForms{
         ];
     }
 
+     public static function canAccess(array $parameters = []): bool
+    {
+         return auth()->user()->hasPermission('create_task');
+    }
+
     public function create()
     {
         $taskId = $this->task_id;

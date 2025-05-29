@@ -725,7 +725,15 @@ class CheckService
 
                     if($whoisPaidTillDate->isToday())
                     {
-                        // send notification
+                        $task->messages()->create([
+                                'status' => false,
+                                'text' => 'Время исчезнет из вашего домена уже сегодня.',
+                            ]);
+                    }elseif ($whoisPaidTillDate->isFuture() && now()->diffInDays($whoisPaidTillDate, false) <= 7) {
+                        $task->messages()->create([
+                                'status' => false,
+                                'text' => 'через 7 дней время исчезнет из вашего домена',
+                            ]);
                     }
                }
             }

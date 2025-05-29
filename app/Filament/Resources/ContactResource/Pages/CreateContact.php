@@ -35,4 +35,9 @@ class CreateContact extends CreateRecord
         return static::getResource()::getUrl('index');
     }
 
+    public static function canAccess(array $parameters = []): bool
+    {
+         return auth()->user()->hasPermission('create_contact');
+    }
+
 }

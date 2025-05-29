@@ -14,10 +14,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            PermissionSeeder::class,
+            RoleSeeder::class,
             VerificationMethodSeeder::class,
             ReportFrequencySeeder::class,
             ContactTypeSeeder::class,
-            InspectionCostSeeder::class
+            InspectionCostSeeder::class,
+            UserSeeder::class
         ]);
     }
 }

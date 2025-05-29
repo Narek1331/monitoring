@@ -16,4 +16,9 @@ class ListContacts extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+     public static function canAccess(array $parameters = []): bool
+    {
+        return auth()->user()->hasPermission('view_contact');
+    }
 }

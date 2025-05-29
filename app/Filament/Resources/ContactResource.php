@@ -200,4 +200,16 @@ class ContactResource extends Resource
             'edit' => Pages\EditContact::route('/{record}/edit'),
         ];
     }
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasPermission('view_contact');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+       return auth()->user()->hasPermission('view_contact');
+    }
+
+
 }

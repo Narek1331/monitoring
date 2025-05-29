@@ -42,6 +42,7 @@ use App\Filament\Forms\Components\{
     InfoBox,
     SecondInfoBox
 };
+use Illuminate\Database\Eloquent\Model;
 use Filament\Tables\Filters\SelectFilter;
 class TaskResource extends Resource
 {
@@ -1544,4 +1545,17 @@ class TaskResource extends Resource
             'mass-add' => Pages\MassAddTasks::route('/mass-add/create'),
         ];
     }
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasPermission('view_task');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+       return auth()->user()->hasPermission('view_task');
+    }
+
+
+
 }

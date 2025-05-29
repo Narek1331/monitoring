@@ -22,4 +22,10 @@ class ListTasks extends ListRecords
             ->url('/account/tasks/mass-add/create')
         ];
     }
+
+    public static function canAccess(array $parameters = []): bool
+    {
+         return auth()->user()->hasPermission('view_task');
+    }
+
 }
