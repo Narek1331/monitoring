@@ -52,7 +52,9 @@ class Task extends Model
         'token',
         'ignored_directories',
         'sample',
-        'form_fields'
+        'form_fields',
+        'report_date_from',
+        'report_date_to',
     ];
 
     protected $casts = [

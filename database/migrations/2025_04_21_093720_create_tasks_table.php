@@ -58,6 +58,8 @@ return new class extends Migration
             $table->string('token')->nullable();
             $table->string('ignored_directories')->nullable();
             $table->text('form_fields')->nullable();
+            $table->date('report_date_from')->nullable();
+            $table->date('report_date_to')->nullable();
 
             $table->boolean('sample')->nullable()->default(false);
 

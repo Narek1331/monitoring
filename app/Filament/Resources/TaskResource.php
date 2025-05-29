@@ -27,7 +27,9 @@ use Filament\Forms\Components\{
     Textarea,
     CheckboxList,
     MultiSelect,
-    Repeater
+    Repeater,
+    Fieldset,
+    DatePicker
 };
 use Filament\Tables\Columns\{
     TextColumn,
@@ -261,6 +263,17 @@ class TaskResource extends Resource
                                 ->label('Выберите периодичность отправки отчетов:')
                                 ->relationship('reportFrequencies', 'name')
                                 ->helperText('Если вы хотите получать на свой e-mail отчеты о работе своего сайта или сервера, выберите как часто мы будем вам их присылать.'),
+                            Fieldset::make('')
+                                ->schema([
+                                    DatePicker::make('report_date_from')
+                                        ->label('Дата начала')
+                                        ->withoutSeconds(),
+                                    DatePicker::make('report_date_to')
+                                        ->label('Дата окончания')
+                                        ->withoutSeconds(),
+                                ])
+                                ->columns(2)
+                                ->columnSpan('full'),
 
                             Select::make('errorNotificationContacts')
                                 ->disablePlaceholderSelection(true)
