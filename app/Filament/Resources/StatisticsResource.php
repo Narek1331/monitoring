@@ -20,6 +20,7 @@ use Filament\Tables\Columns\{
     BadgeColumn
 };
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 class StatisticsResource extends Resource
 {
     protected static ?string $model = Task::class;
@@ -88,7 +89,7 @@ class StatisticsResource extends Resource
                             Http::timeout(5)->get($url);
                             $end = microtime(true);
 
-                            return intval(($end - $start) * 1000); // миллисекунды
+                            return intval(($end - $start) * 1000);
                         } catch (\Exception $e) {
                             return null;
                         }
@@ -100,7 +101,44 @@ class StatisticsResource extends Resource
                         'secondary' => fn ($state) => $state === null,
                     ])
                     ->formatStateUsing(fn ($state) => $state !== null ? "{$state} мс" : 'Ошибка'),
+                BadgeColumn::make('ssl_expiration')
+                    ->label('SSL сертификат')
+                    ->getStateUsing(function ($record) {
+                        $host = parse_url($record->address_ip, PHP_URL_HOST) ?? $record->address_ip;
 
+                        $context = stream_context_create([
+                            "ssl" => [
+                                "capture_peer_cert" => true,
+                                "verify_peer" => false,
+                                "verify_peer_name" => false,
+                            ],
+                        ]);
+
+                        try {
+                            $client = @stream_socket_client("ssl://{$host}:443", $errno, $errstr, 5, STREAM_CLIENT_CONNECT, $context);
+
+                            if (!$client) {
+                                return 'Ошибка';
+                            }
+
+                            $params = stream_context_get_params($client);
+                            $cert = openssl_x509_parse($params["options"]["ssl"]["peer_certificate"]);
+
+                            if (isset($cert['validTo_time_t'])) {
+                                return Carbon::createFromTimestamp($cert['validTo_time_t'])->format('Y-m-d');
+                            }
+
+                            return 'Ошибка';
+                        } catch (\Exception $e) {
+                            return 'Ошибка';
+                        }
+                    })
+                    ->colors([
+                        'success' => fn ($state) => $state !== 'Ошибка' && Carbon::parse($state)->diffInDays(now()) > 30,
+                        'warning' => fn ($state) => $state !== 'Ошибка' && Carbon::parse($state)->diffInDays(now()) <= 30 && Carbon::parse($state)->isFuture(),
+                        'danger' => fn ($state) => $state !== 'Ошибка' && Carbon::parse($state)->isPast(),
+                        'secondary' => fn ($state) => $state === 'Ошибка',
+                    ])
 
             ])
             ->filters([
