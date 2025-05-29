@@ -21,8 +21,9 @@ return new class extends Migration
             $table->string('protocol')->default('http://');
             $table->string('address_ip');
             $table->string('port')->nullable();
-            $table->boolean('control_domain')->nullable()->nullable()->default(false);
-            $table->boolean('site_virus_check')->nullable()->nullable()->default(false);
+            $table->boolean('control_domain')->nullable()->default(false);
+            $table->boolean('control_ssl')->nullable()->default(false);
+            $table->boolean('site_virus_check')->nullable()->default(false);
             $table->string('frequency_of_inspection')->nullable();
             $table->string('error_check_interval')->nullable();
             $table->string('error_notification_threshold')->nullable();

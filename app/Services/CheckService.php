@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 
 class CheckService
 {
@@ -142,15 +143,15 @@ class CheckService
             $task->save();
         }
 
-        $givenTime = Carbon::parse($task['last_check_date']);
-        $currentTime = Carbon::now();
+        // $givenTime = Carbon::parse($task['last_check_date']);
+        // $currentTime = Carbon::now();
 
-        if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
-            $task->last_check_date = now();
-            $task->save();
-        }else{
-            return;
-        }
+        // if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
+        //     $task->last_check_date = now();
+        //     $task->save();
+        // }else{
+        //     return;
+        // }
 
         $url = $task['protocol'] . $task['address_ip'];
         $errorMessage = $task->error_message;
@@ -281,6 +282,11 @@ class CheckService
             $this->checkDomainPaidTill($task);
         }
 
+        if($task->control_ssl)
+        {
+            $this->checkSslPaidTill($task);
+        }
+
         if($task->site_virus_check)
         {
             $this->checkSiteVirus($url);
@@ -288,6 +294,65 @@ class CheckService
 
 
     }
+
+    private function checkSslPaidTill($task)
+    {
+        $getCertificateExpiry = $this->getCertificateExpiry($task['address_ip']);
+        if($getCertificateExpiry){
+           $expiry = Carbon::parse($getCertificateExpiry);
+            $now = Carbon::now();
+
+            $daysLeft = $now->diffInDays($expiry, false);
+
+            if ($daysLeft <= 7 && $daysLeft >= 0) {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $task['address_ip'] .  " SSL истекает через {$daysLeft} дней.",
+                    'status_code' => 500
+                ]);
+            }
+        }
+    }
+
+     public function getCertificateExpiry(string $domain, int $port = 443): ?string
+    {
+        $streamContext = stream_context_create([
+            "ssl" => [
+                "capture_peer_cert" => true,
+                "verify_peer" => false,
+                "verify_peer_name" => false,
+            ],
+        ]);
+
+        $client = @stream_socket_client(
+            "ssl://{$domain}:{$port}",
+            $errno,
+            $errstr,
+            30,
+            STREAM_CLIENT_CONNECT,
+            $streamContext
+        );
+
+        if (!$client) {
+            return null;
+        }
+
+        $params = stream_context_get_params($client);
+        $cert = $params["options"]["ssl"]["peer_certificate"] ?? null;
+
+        if (!$cert) {
+            return null;
+        }
+
+        $certInfo = openssl_x509_parse($cert);
+
+        if (!isset($certInfo['validTo_time_t'])) {
+            return null;
+        }
+
+        return date('Y-m-d H:i:s', $certInfo['validTo_time_t']);
+    }
+
 
     private function proverkaDostupnostiSaitaSOtpravkoiDannyxFormyMetodPost($task)
     {

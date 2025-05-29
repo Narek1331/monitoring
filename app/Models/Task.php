@@ -16,6 +16,7 @@ class Task extends Model
         'address_ip',
         'port',
         'control_domain',
+        'control_ssl',
         'site_virus_check',
         'frequency_of_inspection',
         'error_check_interval',
