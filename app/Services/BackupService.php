@@ -62,7 +62,15 @@ class BackupService
 
         foreach ($tasks as $task) {
             if ($task->reportFrequencies()->where('slug', $frequencySlug)->exists()) {
+
                 $data = $task->messages()->whereBetween('created_at', [$frequency, $now])->get();
+
+                if($task->report_date_from && $task->report_date_to)
+                {
+                    $data = $task->messages()->whereBetween('created_at', [$task->report_date_from, $task->report_date_to])->get();
+
+                }
+
                 $randomFileName = 'exports/data-' . Str::random(10) . '.xlsx';
                 $excel = Excel::store(new ReportExport($data), $randomFileName,'public');
 
