@@ -11,7 +11,10 @@ use App\Models\{
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
-
+use Filament\Actions\Action;
+use Filament\Forms\Components\DatePicker;
+use App\Exports\TaskMessagesExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ViewStatistics extends ViewRecord
 {
@@ -26,6 +29,39 @@ class ViewStatistics extends ViewRecord
     protected function setUp(): void
     {
         parent::setUp();
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('downloadReport')
+                ->label('Скачать отчёт')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->form([
+                    DatePicker::make('from_date')
+                        ->required()
+                        ->label('Дата начала'),
+                    DatePicker::make('to_date')
+                        ->required()
+                        ->label('Дата окончания'),
+                ])
+                ->modalHeading('Выберите период')
+                ->modalSubmitActionLabel('Скачать')
+                ->action(function (array $data, $record) {
+                    $from = $data['from_date'];
+                    $to = $data['to_date'];
+
+                    $messages = $record->messages()
+                        ->when($from, fn($q) => $q->whereDate('created_at', '>=', $from))
+                        ->when($to, fn($q) => $q->whereDate('created_at', '<=', $to))
+                        ->get();
+
+                    if($messages && count($messages))
+                    {
+                        return Excel::download(new TaskMessagesExport($messages), 'Сообщения.xlsx');
+                    }
+                }),
+        ];
     }
 
     public function loadSslExpiration()
