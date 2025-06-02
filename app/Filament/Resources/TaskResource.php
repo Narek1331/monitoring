@@ -46,6 +46,7 @@ use App\Filament\Forms\Components\{
 };
 use Illuminate\Database\Eloquent\Model;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Actions\BulkAction;
 class TaskResource extends Resource
 {
     use \App\Traits\User\GetHelper;
@@ -355,6 +356,43 @@ class TaskResource extends Resource
                     Tables\Actions\DeleteBulkAction::make()
                     ->modalHeading('Удалить отмеченное')
                 ]),
+                 BulkAction::make('sync_report_contacts')
+            ->label('Синхронизировать контакты отчёта')
+            ->form([
+                MultiSelect::make('contacts')
+                    ->label('Выберите контакты для отчётов')
+                    ->options(Contact::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
+            ])
+            ->action(function ($records, $data): void {
+                foreach ($records as $task) {
+                    $task->reportContacts()->sync($data['contacts']);
+                }
+            })
+            ->deselectRecordsAfterCompletion()
+            ->requiresConfirmation()
+            ->modalHeading('Синхронизация контактов отчёта')
+            ->modalSubheading('Выбранные контакты будут привязаны как отчётные'),
+
+        BulkAction::make('sync_error_contacts')
+            ->label('Синхронизировать контакты ошибок')
+            ->form([
+                MultiSelect::make('contacts')
+                    ->label('Выберите контакты для ошибок')
+                    ->options(Contact::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
+            ])
+            ->action(function ($records, array $data): void {
+                foreach ($records as $task) {
+                    $task->errorNotificationContacts()->sync($data['contacts']);
+                }
+            })
+            ->deselectRecordsAfterCompletion()
+            ->requiresConfirmation()
+            ->modalHeading('Синхронизация контактов ошибок')
+            ->modalSubheading('Выбранные контакты будут привязаны как для уведомлений об ошибках'),
             ]);
     }
 
