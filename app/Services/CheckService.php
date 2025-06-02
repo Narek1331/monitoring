@@ -170,7 +170,8 @@ class CheckService
 
         if(!$httpData)
         {
-            $textMessage = $errorMessage ?? "$taskName : Ошибка сервера";
+            $time = now()->format('H:i');
+            $textMessage = $errorMessage ?? "В {$time} по Вашему заданию \"{$taskName}\" была обнаружена проблема.";
             if(!$lastMessage)
             {
                  $task->messages()->create([
@@ -389,7 +390,8 @@ class CheckService
 
         if(!$httpData)
         {
-            $textMessage = $errorMessage ?? "$taskName : Ошибка сервера";
+            $time = now()->format('H:i');
+            $textMessage = $errorMessage ?? "В {$time} по Вашему заданию \"{$taskName}\" была обнаружена проблема.";
             if(!isset($lastMessage->text))
             {
                 $task->messages()->create([
