@@ -6,7 +6,8 @@ use App\Filament\Resources\ContactResource\Pages;
 use App\Filament\Resources\ContactResource\RelationManagers;
 use App\Models\{
     Contact,
-    ContactType
+    ContactType,
+    Task
 };
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -21,7 +22,8 @@ use Filament\Forms\Components\{
     Card,
     Select,
     Toggle,
-    Section
+    Section,
+    MultiSelect
 };
 use Filament\Tables\Columns\{
     TextColumn,
@@ -88,7 +90,18 @@ class ContactResource extends Resource
                             return [];
 
                         })
-                        ->reactive()
+                        ->reactive(),
+                    MultiSelect::make('reportContacts')
+                        ->label('Задачи для отправки уведомлений об ошибках')
+                        ->preload()
+                        ->relationship('reportContacts')
+                        ->options(Task::get()->pluck('name','id')),
+                    MultiSelect::make('errorNotificationContacts')
+                        ->label('Задачи для автоматической отправки отчётов')
+                        ->preload()
+                        ->relationship('errorNotificationContacts')
+                        ->options(Task::get()->pluck('name','id'))
+
 
                 ])
             ]);
