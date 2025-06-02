@@ -191,8 +191,8 @@ class CheckService
             return;
         }
 
-        if($notifyOnRecovery)
-        {
+        // if($notifyOnRecovery)
+        // {
             if(!$lastMessage->status)
             {
                 $task->messages()->create([
@@ -201,7 +201,7 @@ class CheckService
                     'status_code' => $httpStatusCode
                 ]);
             }
-        }
+        // }
 
 
         $searchTextInResponse = $task->search_text_in_response;
@@ -410,8 +410,8 @@ class CheckService
             return;
         }
 
-        if($notifyOnRecovery)
-        {
+        // if($notifyOnRecovery)
+        // {
             if(!$lastMessage->status)
             {
                 $task->messages()->create([
@@ -420,7 +420,7 @@ class CheckService
                     'status_code' => $httpStatusCode
                 ]);
             }
-        }
+        // }
 
 
         $searchTextInResponse = $task->search_text_in_response;
@@ -565,8 +565,8 @@ class CheckService
             return;
         }
 
-        if($notifyOnRecovery)
-        {
+        // if($notifyOnRecovery)
+        // {
             if(!$lastMessage->status)
             {
                 $task->messages()->create([
@@ -575,7 +575,7 @@ class CheckService
                     'status_code' => $httpStatusCode
                 ]);
             }
-        }
+        // }
 
 
         $searchTextInResponse = $task->search_text_in_response;
