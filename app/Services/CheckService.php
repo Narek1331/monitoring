@@ -200,6 +200,7 @@ class CheckService
                 $now = Carbon::now();
                 $lastMessageCreated = $lastMessage->created_at;
                 $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
+                $diffLastMessageCreated = preg_replace('/после.*/u', '', $diffLastMessageCreated);
 
                 $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffLastMessageCreated час";
                 $task->messages()->create([
@@ -427,6 +428,7 @@ class CheckService
                 $now = Carbon::now();
                 $lastMessageCreated = $lastMessage->created_at;
                 $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
+                $diffLastMessageCreated = preg_replace('/после.*/u', '', $diffLastMessageCreated);
 
                 $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffLastMessageCreated час";
 
@@ -589,6 +591,7 @@ class CheckService
                 $now = Carbon::now();
                 $lastMessageCreated = $lastMessage->created_at;
                 $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
+                $diffLastMessageCreated = preg_replace('/после.*/u', '', $diffLastMessageCreated);
 
                 $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffLastMessageCreated";
 
