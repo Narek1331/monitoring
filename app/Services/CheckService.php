@@ -590,7 +590,7 @@ class CheckService
                 $lastMessageCreated = $lastMessage->created_at;
                 $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
 
-                $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffLastMessageCreated час";
+                $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffLastMessageCreated";
 
 
                 $task->messages()->create([
