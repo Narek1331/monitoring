@@ -196,9 +196,15 @@ class CheckService
         // {
             if(!$lastMessage->status)
             {
+                $time = now()->format('H:i');
+                $now = Carbon::now();
+                $lastMessageCreated = $lastMessage->created_at;
+                $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
+
+                $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffLastMessageCreated час";
                 $task->messages()->create([
                     'status' => true,
-                    'text' => "$taskName : Сервер полностью восстановлен",
+                    'text' => $textMessage,
                     'status_code' => $httpStatusCode
                 ]);
             }
@@ -392,6 +398,7 @@ class CheckService
         {
             $time = now()->format('H:i');
             $textMessage = $errorMessage ?? "В {$time} по Вашему заданию \"{$taskName}\" была обнаружена проблема.";
+
             if(!isset($lastMessage->text))
             {
                 $task->messages()->create([
@@ -416,9 +423,16 @@ class CheckService
         // {
             if(!$lastMessage->status)
             {
+                $time = now()->format('H:i');
+                $now = Carbon::now();
+                $lastMessageCreated = $lastMessage->created_at;
+                $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
+
+                $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffLastMessageCreated час";
+
                 $task->messages()->create([
                     'status' => true,
-                    'text' => "$taskName : Сервер полностью восстановлен",
+                    'text' => $textMessage,
                     'status_code' => $httpStatusCode
                 ]);
             }
@@ -571,9 +585,17 @@ class CheckService
         // {
             if(!$lastMessage->status)
             {
+                  $time = now()->format('H:i');
+                $now = Carbon::now();
+                $lastMessageCreated = $lastMessage->created_at;
+                $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
+
+                $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffLastMessageCreated час";
+
+
                 $task->messages()->create([
                     'status' => true,
-                    'text' => "$taskName : Сервер полностью восстановлен",
+                    'text' => $textMessage,
                     'status_code' => $httpStatusCode
                 ]);
             }
