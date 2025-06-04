@@ -171,6 +171,25 @@ class CheckService
         if(!$httpData)
         {
             $time = now()->format('H:i');
+
+            $timezoneOffset = (int) $task->timezone;
+
+            if($timezoneOffset)
+            {
+                $moscowTime = now('Europe/Moscow');
+                $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
+                $time = $adjustedTime->format('H:i');
+            }
+
+            $timezoneOffset = (int) $task->timezone;
+
+            if($timezoneOffset)
+            {
+                $moscowTime = now('Europe/Moscow');
+                $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
+                $time = $adjustedTime->format('H:i');
+            }
+
             $textMessage = $errorMessage ?? "В {$time} по Вашему заданию \"{$taskName}\" была обнаружена проблема.";
             if(!$lastMessage)
             {
@@ -197,6 +216,16 @@ class CheckService
             if(!$lastMessage->status)
             {
                 $time = now()->format('H:i');
+
+                $timezoneOffset = (int) $task->timezone;
+
+                if($timezoneOffset)
+                {
+                    $moscowTime = now('Europe/Moscow');
+                    $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
+                    $time = $adjustedTime->format('H:i');
+                }
+
                 $now = Carbon::now();
                 $lastMessageCreated = $lastMessage->created_at;
                 $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
@@ -398,6 +427,16 @@ class CheckService
         if(!$httpData)
         {
             $time = now()->format('H:i');
+
+            $timezoneOffset = (int) $task->timezone;
+
+            if($timezoneOffset)
+            {
+                $moscowTime = now('Europe/Moscow');
+                $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
+                $time = $adjustedTime->format('H:i');
+            }
+
             $textMessage = $errorMessage ?? "В {$time} по Вашему заданию \"{$taskName}\" была обнаружена проблема.";
 
             if(!isset($lastMessage->text))
@@ -425,6 +464,16 @@ class CheckService
             if(!$lastMessage->status)
             {
                 $time = now()->format('H:i');
+
+                $timezoneOffset = (int) $task->timezone;
+
+                if($timezoneOffset)
+                {
+                    $moscowTime = now('Europe/Moscow');
+                    $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
+                    $time = $adjustedTime->format('H:i');
+                }
+
                 $now = Carbon::now();
                 $lastMessageCreated = $lastMessage->created_at;
                 $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
@@ -587,7 +636,28 @@ class CheckService
         // {
             if(!$lastMessage->status)
             {
-                  $time = now()->format('H:i');
+                $time = now()->format('H:i');
+
+                $timezoneOffset = (int) $task->timezone;
+
+                if($timezoneOffset)
+                {
+                    $moscowTime = now('Europe/Moscow');
+                    $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
+                    $time = $adjustedTime->format('H:i');
+                }
+
+                $timezoneOffset = (int) $task->timezone;
+
+                if($timezoneOffset)
+                {
+                    $moscowTime = now('Europe/Moscow');
+                    $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
+                    $time = $adjustedTime->format('H:i');
+                }
+
+
+
                 $now = Carbon::now();
                 $lastMessageCreated = $lastMessage->created_at;
                 $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
