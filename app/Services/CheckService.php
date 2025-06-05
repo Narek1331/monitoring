@@ -221,6 +221,7 @@ class CheckService
                 $lastMessageCreated = $lastMessage->created_at;
                 $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
                 $diffLastMessageCreated = preg_replace('/после.*/u', '', $diffLastMessageCreated);
+                $diffLastMessageCreated = preg_replace('/час.*/u', '', $diffLastMessageCreated);
 
                 $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffLastMessageCreated час";
                 $task->messages()->create([
@@ -469,6 +470,7 @@ class CheckService
                 $lastMessageCreated = $lastMessage->created_at;
                 $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
                 $diffLastMessageCreated = preg_replace('/после.*/u', '', $diffLastMessageCreated);
+                $diffLastMessageCreated = preg_replace('/час.*/u', '', $diffLastMessageCreated);
 
                 $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffLastMessageCreated час";
 
@@ -653,6 +655,7 @@ class CheckService
                 $lastMessageCreated = $lastMessage->created_at;
                 $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
                 $diffLastMessageCreated = preg_replace('/после.*/u', '', $diffLastMessageCreated);
+                $diffLastMessageCreated = preg_replace('/час.*/u', '', $diffLastMessageCreated);
 
                 $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffLastMessageCreated";
 
