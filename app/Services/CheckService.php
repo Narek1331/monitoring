@@ -174,16 +174,7 @@ class CheckService
 
             $timezoneOffset = (int) $task->timezone;
 
-            if($timezoneOffset)
-            {
-                $moscowTime = now('Europe/Moscow');
-                $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
-                $time = $adjustedTime->format('H:i');
-            }
-
-            $timezoneOffset = (int) $task->timezone;
-
-            if($timezoneOffset)
+            if($timezoneOffset || $timezoneOffset === 0)
             {
                 $moscowTime = now('Europe/Moscow');
                 $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
@@ -219,7 +210,7 @@ class CheckService
 
                 $timezoneOffset = (int) $task->timezone;
 
-                if($timezoneOffset)
+                if($timezoneOffset || $timezoneOffset === 0)
                 {
                     $moscowTime = now('Europe/Moscow');
                     $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
@@ -430,7 +421,7 @@ class CheckService
 
             $timezoneOffset = (int) $task->timezone;
 
-            if($timezoneOffset)
+            if($timezoneOffset || $timezoneOffset === 0)
             {
                 $moscowTime = now('Europe/Moscow');
                 $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
@@ -467,7 +458,7 @@ class CheckService
 
                 $timezoneOffset = (int) $task->timezone;
 
-                if($timezoneOffset)
+                if($timezoneOffset || $timezoneOffset === 0)
                 {
                     $moscowTime = now('Europe/Moscow');
                     $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
@@ -640,7 +631,7 @@ class CheckService
 
                 $timezoneOffset = (int) $task->timezone;
 
-                if($timezoneOffset)
+                if($timezoneOffset || $timezoneOffset === 0)
                 {
                     $moscowTime = now('Europe/Moscow');
                     $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
@@ -649,7 +640,7 @@ class CheckService
 
                 $timezoneOffset = (int) $task->timezone;
 
-                if($timezoneOffset)
+                if($timezoneOffset || $timezoneOffset === 0)
                 {
                     $moscowTime = now('Europe/Moscow');
                     $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
