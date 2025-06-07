@@ -290,8 +290,15 @@ class CheckService
         }
 
 
+        if($task->control_domain)
+        {
+            $this->checkDomainPaidTill($task);
+        }
 
-
+        if($task->site_virus_check)
+        {
+            $this->checkSiteVirus($url);
+        }
 
     }
 
@@ -544,9 +551,15 @@ class CheckService
             return;
         }
 
+        if($task->control_domain)
+        {
+            $this->checkDomainPaidTill($task);
+        }
 
-
-
+        if($task->site_virus_check)
+        {
+            $this->checkSiteVirus($url);
+        }
 
     }
 
