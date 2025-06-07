@@ -71,26 +71,26 @@ class CheckService
 
     private function proverkaDostupnostiFtpServera($task)
     {
-        // if(!$task->status)
-        // {
-        //     return;
-        // }
+        if(!$task->status)
+        {
+            return;
+        }
 
-        // if(!$task->last_check_date)
-        // {
-        //     $task->last_check_date = now();
-        //     $task->save();
-        // }
+        if(!$task->last_check_date)
+        {
+            $task->last_check_date = now();
+            $task->save();
+        }
 
-        // $givenTime = Carbon::parse($task['last_check_date']);
-        // $currentTime = Carbon::now();
+        $givenTime = Carbon::parse($task['last_check_date']);
+        $currentTime = Carbon::now();
 
-        // if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
-        //     $task->last_check_date = now();
-        //     $task->save();
-        // }else{
-        //     return;
-        // }
+        if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
+            $task->last_check_date = now();
+            $task->save();
+        }else{
+            return;
+        }
 
         $addressIp = $task['address_ip'];
         $port = $task['port'];
@@ -143,20 +143,25 @@ class CheckService
             $task->save();
         }
 
-        // $givenTime = Carbon::parse($task['last_check_date']);
-        // $currentTime = Carbon::now();
+        $givenTime = Carbon::parse($task['last_check_date']);
+        $currentTime = Carbon::now();
 
-        // if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
-        //     $task->last_check_date = now();
-        //     $task->save();
-        // }else{
-        //     return;
-        // }
+        if ($givenTime->diffInMinutes($currentTime) >= $task->frequency_of_inspection) {
+            $task->last_check_date = now();
+            $task->save();
+        }else{
+            return;
+        }
 
         $url = $task['protocol'] . $task['address_ip'];
         $errorMessage = $task->error_message;
         $notifyOnRecovery = $task->notify_on_recovery;
         $taskName = $task->name;
+        $timezoneOffset = (int) $task->timezone;
+        $nowTime = Carbon::now();
+
+
+        $time = $this->getAdjustedTime($timezoneOffset);
 
         if($port = $task['port'])
         {
@@ -168,70 +173,49 @@ class CheckService
         $httpStatusCode = $httpData['status'] ?? 500;
         $lastMessage = $task->messages->last();
 
+
         if(!$httpData)
         {
-            $time = now()->format('H:i');
-
-            $timezoneOffset = (int) $task->timezone;
-
-            if($timezoneOffset || $timezoneOffset === 0)
-            {
-                $moscowTime = now('Europe/Moscow');
-                $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
-                $time = $adjustedTime->format('H:i');
-            }
-
             $textMessage = $errorMessage ?? "В {$time} по Вашему заданию \"{$taskName}\" была обнаружена проблема.";
+
             if(!$lastMessage)
-            {
-                 $task->messages()->create([
-                    'status' => false,
-                    'text' => $textMessage,
-                    'status_code' => 500
-                ]);
-            }
-            else if($lastMessage->text != $textMessage)
             {
                 $task->messages()->create([
                     'status' => false,
                     'text' => $textMessage,
                     'status_code' => 500
                 ]);
-            }
 
-            return;
+                return;
+
+            }else if($lastMessage && $lastMessage->status_code != 500)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => 500
+                ]);
+
+                return;
+            }
         }
 
-        // if($notifyOnRecovery)
-        // {
-            if(!$lastMessage->status)
+        if($lastMessage && !$lastMessage->status && $lastMessage->status_code != 200)
+        {
+            if($httpStatusCode == 200)
             {
-                $time = now()->format('H:i');
+                $diffInHoursBetweenDates = $this->diffBetweenDates($nowTime,$lastMessage->created_at);
 
-                $timezoneOffset = (int) $task->timezone;
+                $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffInHoursBetweenDates";
 
-                if($timezoneOffset || $timezoneOffset === 0)
-                {
-                    $moscowTime = now('Europe/Moscow');
-                    $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
-                    $time = $adjustedTime->format('H:i');
-                }
-
-                $now = Carbon::now();
-                $lastMessageCreated = $lastMessage->created_at;
-                $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
-                $diffLastMessageCreated = preg_replace('/после.*/u', '', $diffLastMessageCreated);
-                $diffLastMessageCreated = preg_replace('/час.*/u', '', $diffLastMessageCreated);
-
-                $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffLastMessageCreated час";
                 $task->messages()->create([
                     'status' => true,
                     'text' => $textMessage,
                     'status_code' => $httpStatusCode
                 ]);
-            }
-        // }
 
+            }
+        }
 
         $searchTextInResponse = $task->search_text_in_response;
         $textPresenceErrorCheck = $task->text_presence_error_check;
@@ -306,22 +290,45 @@ class CheckService
         }
 
 
-        if($task->control_domain)
-        {
-            $this->checkDomainPaidTill($task);
+
+
+
+    }
+
+    private function getAdjustedTime(?int $timezoneOffset = null): string
+    {
+        $moscowTime = Carbon::now('Europe/Moscow');
+
+        if ($timezoneOffset !== null) {
+            $moscowTime->addHours($timezoneOffset);
         }
 
-        if($task->control_ssl)
-        {
-            $this->checkSslPaidTill($task);
+        return $moscowTime->format('H:i');
+    }
+
+    private function diffBetweenDates($start, $end, bool $absolute = true, int $precision = 1): string
+    {
+        $start = $start instanceof Carbon ? $start : Carbon::parse($start);
+        $end = $end instanceof Carbon ? $end : Carbon::parse($end);
+
+        $diffInSeconds = $absolute
+            ? $start->diffInSeconds($end)
+            : $end->timestamp - $start->timestamp;
+
+        $signedPrefix = (!$absolute && $diffInSeconds < 0) ? '-' : '';
+        $absSeconds = abs($diffInSeconds);
+
+        if ($absSeconds < 60) {
+            return $signedPrefix . $absSeconds . ' секунд';
         }
 
-        if($task->site_virus_check)
-        {
-            $this->checkSiteVirus($url);
+        $minutes = round($absSeconds / 60);
+        if ($minutes < 60) {
+            return $signedPrefix . $minutes . ' минут';
         }
 
-
+        $hours = round($absSeconds / 3600);
+        return $signedPrefix . $hours . ' час';
     }
 
     private function checkSslPaidTill($task)
@@ -405,6 +412,11 @@ class CheckService
         $errorMessage = $task->error_message;
         $notifyOnRecovery = $task->notify_on_recovery;
         $taskName = $task->name;
+        $timezoneOffset = (int) $task->timezone;
+        $nowTime = Carbon::now();
+
+
+        $time = $this->getAdjustedTime($timezoneOffset);
 
         if($port = $task['port'])
         {
@@ -416,78 +428,55 @@ class CheckService
         $httpStatusCode = $httpData['status'] ?? 500;
         $lastMessage = $task->messages->last();
 
+
         if(!$httpData)
         {
-            $time = now()->format('H:i');
-
-            $timezoneOffset = (int) $task->timezone;
-
-            if($timezoneOffset || $timezoneOffset === 0)
-            {
-                $moscowTime = now('Europe/Moscow');
-                $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
-                $time = $adjustedTime->format('H:i');
-            }
-
             $textMessage = $errorMessage ?? "В {$time} по Вашему заданию \"{$taskName}\" была обнаружена проблема.";
 
-            if(!isset($lastMessage->text))
+            if(!$lastMessage)
             {
                 $task->messages()->create([
                     'status' => false,
                     'text' => $textMessage,
                     'status_code' => 500
                 ]);
-            }
-            else if($lastMessage->text != $textMessage)
-            {
-                $task->messages()->create([
-                    'status' => false,
-                    'text' => $textMessage,
-                    'status_code' => 500
-                ]);
-            }
 
-            return;
+                return;
+
+            }else if($lastMessage && $lastMessage->status_code != 500)
+            {
+                $task->messages()->create([
+                    'status' => false,
+                    'text' => $textMessage,
+                    'status_code' => 500
+                ]);
+
+                return;
+            }
         }
 
-        // if($notifyOnRecovery)
-        // {
-            if(!$lastMessage->status)
+        if($lastMessage && !$lastMessage->status && $lastMessage->status_code != 200)
+        {
+            if($httpStatusCode == 200)
             {
-                $time = now()->format('H:i');
+                $diffInHoursBetweenDates = $this->diffBetweenDates($nowTime,$lastMessage->created_at);
 
-                $timezoneOffset = (int) $task->timezone;
-
-                if($timezoneOffset || $timezoneOffset === 0)
-                {
-                    $moscowTime = now('Europe/Moscow');
-                    $adjustedTime = $moscowTime->copy()->addHours($timezoneOffset);
-                    $time = $adjustedTime->format('H:i');
-                }
-
-                $now = Carbon::now();
-                $lastMessageCreated = $lastMessage->created_at;
-                $diffLastMessageCreated = $now->diffForHumans($lastMessageCreated);
-                $diffLastMessageCreated = preg_replace('/после.*/u', '', $diffLastMessageCreated);
-                $diffLastMessageCreated = preg_replace('/час.*/u', '', $diffLastMessageCreated);
-
-                $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffLastMessageCreated час";
+                $textMessage = "В $time проблема по Вашему заданию $taskName была устранена. Длительность ошибки: $diffInHoursBetweenDates";
 
                 $task->messages()->create([
                     'status' => true,
                     'text' => $textMessage,
                     'status_code' => $httpStatusCode
                 ]);
-            }
-        // }
 
+            }
+        }
 
         $searchTextInResponse = $task->search_text_in_response;
         $textPresenceErrorCheck = $task->text_presence_error_check;
-        $validResponseCode = $task->valid_response_code;
-        $ignoredErrorCodes = $task->ignored_error_codes;
-        $alertOnSpecificCodes = $task->alert_on_specific_codes;
+        $validResponseCode = $task->valid_response_code ?? 200;
+        $ignoredErrorCodes = $task->ignored_error_codes ?? 404;
+        $alertOnSpecificCodes = $task->alert_on_specific_codes ?? 500;
 
         if ($searchTextInResponse && strpos($httpData['html'], $searchTextInResponse) == false) {
             $textMessage = $errorMessage ?? "$taskName : Запрашиваемый текст отсутствует";
@@ -536,7 +525,7 @@ class CheckService
         if($httpStatusCode != $validResponseCode && $httpStatusCode != $ignoredErrorCodes && $httpStatusCode == $alertOnSpecificCodes)
         {
             $textMessage = $errorMessage ?? "$taskName : Обнаружен ошибочный статус-код в ответе сервера";
-            if(!$lastMessage)
+            if(!$lastMessage->text)
             {
                 $task->messages()->create([
                     'status' => false,
@@ -556,15 +545,7 @@ class CheckService
         }
 
 
-        if($task->control_domain)
-        {
-            $this->checkDomainPaidTill($task);
-        }
 
-        if($task->site_virus_check)
-        {
-            $this->checkSiteVirus($url);
-        }
 
 
     }
