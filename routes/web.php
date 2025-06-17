@@ -1,13 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Webhook\TelegramController;
-use App\Http\Controllers\Webhook\TaskController;
+use App\Http\Controllers\{
+    Webhook\TelegramController,
+    Webhook\TaskController,
+    CodeController
+};
 use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/code',[CodeController::class,'index']);
 
 // Route::get('/check', function (\App\Services\CheckService $checkService) {
 //     $checkService->index();

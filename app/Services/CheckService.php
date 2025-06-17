@@ -160,6 +160,8 @@ class CheckService
         $timezoneOffset = (int) $task->timezone;
         $nowTime = Carbon::now();
 
+        $errorCodeUrl = env('APP_URL') . '/code';
+
 
         $time = $this->getAdjustedTime($timezoneOffset);
 
@@ -176,7 +178,7 @@ class CheckService
 
         if(!$httpData)
         {
-            $textMessage = $errorMessage ?? "В {$time} по Вашему заданию \"{$taskName}\" была обнаружена проблема.";
+            $textMessage = $errorMessage ?? "В {$time} по Вашему заданию \"{$taskName}\" была обнаружена проблема. Код ошибки: $httpStatusCode. Подробную расшифровку всех кодов Вы можете найти на странице $errorCodeUrl";
 
             if(!$lastMessage)
             {
@@ -422,6 +424,7 @@ class CheckService
         $timezoneOffset = (int) $task->timezone;
         $nowTime = Carbon::now();
 
+        $errorCodeUrl = env('APP_URL') . '/code';
 
         $time = $this->getAdjustedTime($timezoneOffset);
 
@@ -438,7 +441,7 @@ class CheckService
 
         if(!$httpData)
         {
-            $textMessage = $errorMessage ?? "В {$time} по Вашему заданию \"{$taskName}\" была обнаружена проблема.";
+            $textMessage = $errorMessage ?? "В {$time} по Вашему заданию \"{$taskName}\" была обнаружена проблема. Код ошибки: $httpStatusCode. Подробную расшифровку всех кодов Вы можете найти на странице $errorCodeUrl";
 
             if(!$lastMessage)
             {
