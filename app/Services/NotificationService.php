@@ -53,12 +53,12 @@ class NotificationService
                 $taskMessage->save();
 
             } else {
-                $checkQuery = TaskMessage::where('status',false)
-                ->where('sended',false)
-                ->where('text',$taskMessage->text);
+                // $checkQuery = TaskMessage::where('status',false)
+                // ->where('sended',false)
+                // ->where('text',$taskMessage->text);
 
-                if($checkQuery->count() == $errorNotificationThreshold)
-                {
+                // if($checkQuery->count() == $errorNotificationThreshold)
+                // {
                     foreach($task->reportContacts as $reportContact)
                     {
                         if($reportContact->type->slug == 'email')
@@ -76,8 +76,11 @@ class NotificationService
                         }
                     }
 
-                    $checkQuery->update(['sended'=>true]);
-                }
+                    $taskMessage->sended = 1;
+                    $taskMessage->save();
+
+                    // $checkQuery->update(['sended'=>true]);
+                // }
             }
 
 
@@ -87,7 +90,6 @@ class NotificationService
     private function sendEmailNotification($email,$message)
     {
         Notification::route('mail', $email)->notify(new SendEmailNotification($message));
-
     }
 
 }
