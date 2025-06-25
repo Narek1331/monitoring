@@ -22,7 +22,8 @@ use App\Filament\Pages\Auth\{
     EditProfile
 };
 use Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
-
+use Filament\View\PanelsRenderHook;
+use pxlrbt\FilamentSpotlight\SpotlightPlugin;
 class AccountPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -33,7 +34,7 @@ class AccountPanelProvider extends PanelProvider
             ->path('account')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Blue,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -61,6 +62,11 @@ class AccountPanelProvider extends PanelProvider
             ->profile(EditProfile::class)
             ->registration(Register::class)
             ->passwordReset()
-            ->emailVerification(EmailVerificationPrompt::class);
+            ->emailVerification(EmailVerificationPrompt::class)
+            ->databaseNotifications()
+            ->globalSearchFieldKeyBindingSuffix()
+            ->globalSearch()
+            ->sidebarCollapsibleOnDesktop();
+
     }
 }

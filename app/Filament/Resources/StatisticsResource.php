@@ -37,6 +37,13 @@ class StatisticsResource extends Resource
 
     protected static ?string $navigationLabelName = 'Статистика';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name'];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

@@ -23,6 +23,13 @@ class UserResource extends Resource
     protected static ?string $pluralLabel = 'Пользователи';
     protected static ?string $label = 'Пользователь';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name','email'];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

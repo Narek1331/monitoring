@@ -31,6 +31,13 @@ class ReportResource extends Resource
     protected static ?string $pluralLabel = 'Отчеты';
 
     protected static ?string $navigationLabelName = 'Отчеты';
+
+    protected static ?string $recordTitleAttribute = 'text';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['text'];
+    }
     public static function form(Form $form): Form
     {
         return $form
