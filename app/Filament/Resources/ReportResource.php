@@ -20,7 +20,12 @@ class ReportResource extends Resource
 {
     protected static ?string $model = TaskMessage::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function getNavigationIcon(): ?string
+    {
+        return '/svg/file.svg';
+    }
 
     protected static ?string $title = 'Отчеты';
 

@@ -38,7 +38,12 @@ class ContactResource extends Resource
 
     protected static ?string $model = Contact::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    // protected static ?string $navigationIcon = 'heroicon-o-user';
+
+    public static function getNavigationIcon(): ?string
+    {
+        return '/svg/clients.svg';
+    }
 
     protected static ?string $title = 'Контакты';
 

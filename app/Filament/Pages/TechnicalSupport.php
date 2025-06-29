@@ -12,7 +12,12 @@ class TechnicalSupport extends Page
     {
         $this->email = auth()->user()->email;
     }
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    // protected static ?string $navigationIcon = 'heroicon-o-document-text';
+
+    public static function getNavigationIcon(): ?string
+    {
+        return '/svg/file.svg';
+    }
 
     protected static string $view = 'filament.pages.technical-support';
 

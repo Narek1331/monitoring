@@ -8,7 +8,13 @@ use Filament\Notifications\Notification;
 
 class AccountMovements extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+    // protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+
+    public static function getNavigationIcon(): ?string
+    {
+        return '/svg/wallet.svg';
+    }
+
 
     protected static ?string $navigationGroup = 'Финансы';
 

@@ -24,6 +24,8 @@ use App\Filament\Pages\Auth\{
 use Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
 use Filament\View\PanelsRenderHook;
 use pxlrbt\FilamentSpotlight\SpotlightPlugin;
+use Livewire\Livewire;
+use Filament\Pages\Dashboard;
 class AccountPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -39,7 +41,8 @@ class AccountPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                \App\Filament\Pages\Dashboard::class
+                // Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -65,8 +68,20 @@ class AccountPanelProvider extends PanelProvider
             ->emailVerification(EmailVerificationPrompt::class)
             ->databaseNotifications()
             ->globalSearchFieldKeyBindingSuffix()
-            ->globalSearch()
-            ->sidebarCollapsibleOnDesktop();
+            ->globalSearch(false)
+            ->sidebarCollapsibleOnDesktop()
+            ->renderHook(
+                'panels::topbar.start',
+                fn () => Livewire::mount('global-search'),
+            )
+            ->renderHook(
+                'panels::topbar.end',
+                fn () => Livewire::mount('message-modal'),
+            )
+            ->renderHook(
+                'panels::topbar.end',
+                fn () => Livewire::mount('user-info'),
+            );
 
     }
 }
